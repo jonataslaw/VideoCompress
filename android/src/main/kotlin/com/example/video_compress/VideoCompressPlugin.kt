@@ -65,13 +65,9 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
 
                 when (quality) {
 
-//                    0 -> {
-//                        strategy: TrackStrategy = DefaultVideoStrategy.Builder()
-//                        .keyFrameInterval(3f)
-//                                .bitRate(1280 * 720 * 4.toLong())
-//                                .frameRate(30) // will be capped to the input frameRate
-//                                .build()
-//                    }
+                   0 -> {
+                      strategy = DefaultVideoStrategy.atMost(720).build()
+                   }
 
                     1 -> {
                         strategy = DefaultVideoStrategy.atMost(340).build()
@@ -97,17 +93,12 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
                         .setListener(object : TranscoderListener {
                             override fun onTranscodeProgress(progress: Double) {}
                             override fun onTranscodeCompleted(successCode: Int) {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(destPath))
-                                intent.setDataAndType(Uri.parse(destPath), "video/mp4")
-                                activity.startActivity(intent)
-
                                 val json = Utility(channelName).getMediaInfoJson(context, destPath)
                                 json.put("isCancel", false)
                                 result.success(json.toString())
                                 if (deleteOrigin) {
                                     File(path).delete()
                                 }
-
                             }
 
                             override fun onTranscodeCanceled() {
