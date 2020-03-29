@@ -98,7 +98,6 @@ class ... extends State<MyApp> {
 |--|--|--|--|
 |getThumbnail|String `path`[video path], int `quality`(1-100)[thumbnail quality], int `position`[Get a thumbnail from video position]|get thumbnail from video `path`|`Future<Uint8List>`|
 |getThumbnailWithFile|String `path`[video path], int `quality`(1-100)[thumbnail quality], int `position`[Get a thumbnail from video position]|get thumbnail file from video `path`|`Future<File>`|
-|convertVideoToGif|String `path`[video path], int `startTime`(from 0 start)[convert video to gif start time], int `endTime`[convert video to gif end time], int `duration`[convert video to gif duration from start time]|convert video to gif from video `path`|`Future<File>`|
 |getMediaInfo|String `path`[video path]|get media information from video `path`|`Future<MediaInfo>`|
 |compressVideo|String `path`[video path], VideoQuality `quality`[compressed video quality], bool `deleteOrigin`[delete the origin video], int `startTime`[compression video start time], int `duration`[compression video duration from start time], bool `includeAudio`[is include audio in compressed video], int `frameRate`[compressed video frame rate]|compression video at origin video `path`|`Future<MediaInfo>`|
 |cancelCompression|`none`|cancel compressing|`Future<void>`|
