@@ -91,7 +91,9 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
                         .addDataSource(context, Uri.parse(path))
                         .setVideoTrackStrategy(strategy)
                         .setListener(object : TranscoderListener {
-                            override fun onTranscodeProgress(progress: Double) {}
+                            override fun onTranscodeProgress(progress: Double) {
+                                channel.invokeMethod("updateProgress", progress)
+                            }
                             override fun onTranscodeCompleted(successCode: Int) {
                                 val json = Utility(channelName).getMediaInfoJson(context, destPath)
                                 json.put("isCancel", false)

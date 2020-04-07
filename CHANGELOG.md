@@ -7,3 +7,6 @@
 
 ## 0.1.2
 - Removed unecessary intent when process is done
+
+## 0.1.3
+- added progress listen
