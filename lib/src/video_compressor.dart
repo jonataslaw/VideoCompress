@@ -28,15 +28,9 @@ class VideoCompress {
   Future<void> _handleCallback(MethodCall call) async {
     switch (call.method) {
       case 'updateProgress':
-        final progress = double.tryParse(call.arguments);
-        _updateProgressState(progress);
+        final progress = double.tryParse(call.arguments.toString());
+        if(progress != null) this.compressProgress$.next(progress);
         break;
-    }
-  }
-
-  void _updateProgressState(double state) {
-    if (state != null) {
-      compressProgress$.next(state);
     }
   }
 
