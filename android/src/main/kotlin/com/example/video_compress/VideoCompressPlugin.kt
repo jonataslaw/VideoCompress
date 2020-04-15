@@ -57,7 +57,7 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
                 val includeAudio = call.argument<Boolean>("includeAudio")
                 val frameRate = if (call.argument<Int>("frameRate")==null) 30 else call.argument<Int>("frameRate")
 
-                val tempDir: String = this.context.getExternalFilesDir("video_compress").absolutePath
+                val tempDir: String = this.context.getExternalFilesDir("video_compress")!!.absolutePath
                 val out = SimpleDateFormat("yyyy-MM-dd hh-mm-ss").format(Date())
                 val destPath: String = tempDir + File.separator + "VID_" + out + ".mp4"
 
