@@ -22,6 +22,15 @@
       "contributions": [
         "maintenance"
       ]
+    },
+    {
+      "login": "jonataslaw",
+      "name": "Jonny Borges",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/35742643?v=4",
+      "profile": "https://github.com/jonataslaw",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
