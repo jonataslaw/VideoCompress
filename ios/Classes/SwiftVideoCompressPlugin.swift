@@ -185,7 +185,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         let cmDurationTime = CMTimeMakeWithSeconds(maxDurationTime, preferredTimescale: timescale)
         let timeRange: CMTimeRange = CMTimeRangeMake(start: cmStartTime, duration: cmDurationTime)
         
-        let isIncludeAudio = includeAudio != nil ? includeAudio! : false
+        let isIncludeAudio = includeAudio != nil ? includeAudio! : true
         
         let session = getComposition(isIncludeAudio, timeRange, sourceVideoTrack!)
         
