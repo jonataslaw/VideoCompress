@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "khainhero",
+      "name": "khainhero",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/42075898?v=4",
+      "profile": "http://projectmeet.app",
+      "contributions": [
+        "maintenance"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "VideoCompress",
+  "projectOwner": "jonataslaw",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
