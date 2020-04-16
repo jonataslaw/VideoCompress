@@ -1,6 +1,6 @@
 # video_compress
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Compress videos, remove audio, manipulate thumbnails, and make your video compatible with all platforms through this lightweight and efficient library.
@@ -131,6 +131,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="http://projectmeet.app"><img src="https://avatars1.githubusercontent.com/u/42075898?v=4" width="100px;" alt=""/><br /><sub><b>khainhero</b></sub></a><br /><a href="#maintenance-khainhero" title="Maintenance">🚧</a></td>
     <td align="center"><a href="https://github.com/Serdnad"><img src="https://avatars1.githubusercontent.com/u/4723453?v=4" width="100px;" alt=""/><br /><sub><b>Andres Gutierrez</b></sub></a><br /><a href="#maintenance-Serdnad" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://github.com/jonataslaw"><img src="https://avatars2.githubusercontent.com/u/35742643?v=4" width="100px;" alt=""/><br /><sub><b>Jonny Borges</b></sub></a><br /><a href="https://github.com/jonataslaw/VideoCompress/commits?author=jonataslaw" title="Code">💻</a></td>
   </tr>
 </table>
 
