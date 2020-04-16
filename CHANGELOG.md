@@ -10,3 +10,6 @@
 
 ## 0.1.3
 - added progress listen
+
+## 1.0.0
+- release new version
