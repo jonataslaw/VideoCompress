@@ -9,59 +9,56 @@ import 'package:flutter/services.dart';
 import 'media_info.dart';
 
 class VideoCompress {
-  static const _channel = const MethodChannel('video_compress');
+  static VideoCompress _instance;
 
-  factory VideoCompress() => VideoCompress._();
-
-  /// Subscribe the conversion progress
-  final compressProgress$ = ObservableBuilder<double>();
-
-  /// get is Compressing state
-  bool get isCompressing => _isCompressing;
-
-  bool _isCompressing = false;
-
-  VideoCompress._() {
-    _channel.setMethodCallHandler(_handleCallback);
+  factory VideoCompress() {
+    if (_instance == null) _instance = VideoCompress._();
+    return _instance;
   }
 
-  Future<void> _handleCallback(MethodCall call) async {
+  VideoCompress._() {
+    _channel.setMethodCallHandler(_progresCallback);
+  }
+
+  static const _channel = const MethodChannel('video_compress');
+
+  /// Check compress state
+  static bool get isCompressing => _isCompressing;
+
+  static bool _isCompressing = false;
+
+  Future<void> _progresCallback(MethodCall call) async {
     switch (call.method) {
       case 'updateProgress':
         final progress = double.tryParse(call.arguments.toString());
-        if(progress != null) this.compressProgress$.next(progress);
+        if (progress != null) compressProgress$.next(progress);
         break;
     }
   }
 
-  Future<T> _invoke<T>(String name, [Map<String, dynamic> params]) async {
+  /// Subscribe the compress progress
+  static ObservableBuilder<double> compressProgress$ =
+      ObservableBuilder<double>();
+
+  static Future<T> _invoke<T>(String name,
+      [Map<String, dynamic> params]) async {
     T result;
     try {
       result = params != null
           ? await _channel.invokeMethod(name, params)
           : await _channel.invokeMethod(name);
     } on PlatformException catch (e) {
-      debugPrint('''FlutterVideoCompress Error: 
+      debugPrint('''Error from VideoCompress: 
       Method: $name
       $e''');
     }
     return result;
   }
 
-  /// get thumbnail from [path]
-  ///
-  /// get thumbnail from [path] return [Future<Uint8List>],
+  /// getByteThumbnail return [Future<Uint8List>],
   /// quality can be controlled by [quality] from 1 to 100,
-  /// select the position unit in the video by [position] is seconds, don't worry about crossing the boundary
-  ///
-  /// ## example
-  /// ```dart
-  /// final uint8list = await _flutterVideoCompress.getThumbnail(
-  ///   file.path,
-  ///   quality: 50,
-  /// );
-  /// ```
-  Future<Uint8List> getThumbnail(
+  /// select the position unit in the video by [position] is seconds
+  static Future<Uint8List> getByteThumbnail(
     String path, {
     int quality = 100,
     int position = -1,
@@ -69,26 +66,17 @@ class VideoCompress {
     assert(path != null);
     assert(quality > 1 || quality < 100);
 
-    return await _invoke<Uint8List>('getThumbnail', {
+    return await _invoke<Uint8List>('getByteThumbnail', {
       'path': path,
       'quality': quality,
       'position': position,
     });
   }
 
-  /// get thumbnail file from [path] return [Future<File>]
-  ///
+  /// getFileThumbnail return [Future<File>]
   /// quality can be controlled by [quality] from 1 to 100,
-  /// select the position unit in the video by [position] is seconds, don't worry about crossing the boundary
-  ///
-  /// ## example
-  /// ```dart
-  /// final file = await _flutterVideoCompress.getThumbnailWithFile(
-  ///   file.path,
-  ///   quality: 50,
-  /// );
-  /// ```
-  Future<File> getThumbnailWithFile(
+  /// select the position unit in the video by [position] is seconds
+  static Future<File> getFileThumbnail(
     String path, {
     int quality = 100,
     int position = -1,
@@ -96,7 +84,7 @@ class VideoCompress {
     assert(path != null);
     assert(quality > 1 || quality < 100);
 
-    final filePath = await _invoke<String>('getThumbnailWithFile', {
+    final filePath = await _invoke<String>('getFileThumbnail', {
       'path': path,
       'quality': quality,
       'position': position,
@@ -116,7 +104,7 @@ class VideoCompress {
   /// final info = await _flutterVideoCompress.getMediaInfo(file.path);
   /// debugPrint(info.toJson());
   /// ```
-  Future<MediaInfo> getMediaInfo(String path) async {
+  static Future<MediaInfo> getMediaInfo(String path) async {
     assert(path != null);
     final jsonStr = await _invoke<String>('getMediaInfo', {'path': path});
     final jsonMap = json.decode(jsonStr);
@@ -138,24 +126,24 @@ class VideoCompress {
   /// );
   /// debugPrint(info.toJson());
   /// ```
-  Future<MediaInfo> compressVideo(
+  static Future<MediaInfo> compressVideo(
     String path, {
     VideoQuality quality = VideoQuality.DefaultQuality,
     bool deleteOrigin = false,
     int startTime,
     int duration,
     bool includeAudio,
-    int frameRate,
+    int frameRate = 30,
   }) async {
     assert(path != null);
     if (_isCompressing) {
-      throw StateError('''FlutterVideoCompress Error: 
+      throw StateError('''VideoCompress Error: 
       Method: compressVideo
       Already have a compression process, you need to wait for the process to finish or stop it''');
     }
     _isCompressing = true;
     if (compressProgress$.notSubscribed) {
-      debugPrint('''FlutterVideoCompress: You can try to subscribe to the 
+      debugPrint('''VideoCompress: You can try to subscribe to the 
       compressProgress\$ stream to know the compressing state.''');
     }
     final jsonStr = await _invoke<String>('compressVideo', {
@@ -174,23 +162,13 @@ class VideoCompress {
 
   /// stop compressing the file that is currently being compressed.
   /// If there is no compression process, nothing will happen.
-  ///
-  /// ## example
-  /// ```dart
-  /// await _flutterVideoCompress.cancelCompression();
-  /// ```
-  Future<void> cancelCompression() async {
+  static Future<void> cancelCompression() async {
     await _invoke<void>('cancelCompression');
   }
 
   /// delete the cache folder, please do not put other things
   /// in the folder of this plugin, it will be cleared
-  ///
-  /// ## example
-  /// ```dart
-  /// await _flutterVideoCompress.deleteAllCache();
-  /// ```
-  Future<bool> deleteAllCache() async {
+  static Future<bool> deleteAllCache() async {
     return await _invoke<bool>('deleteAllCache');
   }
 }

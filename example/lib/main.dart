@@ -97,23 +97,19 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final _flutterVideoCompress = VideoCompress();
-          File file = await ImagePicker.pickVideo(
-              source: ImageSource.gallery
-          );
-        //  _counter =
-          final info = await _flutterVideoCompress.compressVideo(
+          File file = await ImagePicker.pickVideo(source: ImageSource.gallery);
+          final info = await VideoCompress.compressVideo(
             file.path,
-            quality: VideoQuality.MediumQuality, // default(VideoQuality.DefaultQuality)
-            deleteOrigin: false, // default(false)
+            quality: VideoQuality.MediumQuality,
+            deleteOrigin: false,
           );
-      //    debugPrint(info.toJson().toString());
-        _counter = info.path;
+
+          _counter = info.path;
           setState(() {});
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }

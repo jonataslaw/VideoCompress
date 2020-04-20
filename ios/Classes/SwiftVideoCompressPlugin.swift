@@ -21,16 +21,16 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         let args = call.arguments as? Dictionary<String, Any>
         switch call.method {
-        case "getThumbnail":
+        case "getByteThumbnail":
             let path = args!["path"] as! String
             let quality = args!["quality"] as! NSNumber
             let position = args!["position"] as! NSNumber
-            getThumbnail(path, quality, position, result)
-        case "getThumbnailWithFile":
+            getByteThumbnail(path, quality, position, result)
+        case "getFileThumbnail":
             let path = args!["path"] as! String
             let quality = args!["quality"] as! NSNumber
             let position = args!["position"] as! NSNumber
-            getThumbnailWithFile(path, quality, position, result)
+            getFileThumbnail(path, quality, position, result)
         case "getMediaInfo":
             let path = args!["path"] as! String
             getMediaInfo(path, result)
@@ -72,19 +72,19 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         return thumbnail.jpegData(compressionQuality: compressionQuality)
     }
     
-    private func getThumbnail(_ path: String,_ quality: NSNumber,_ position: NSNumber,_ result: FlutterResult) {
+    private func getByteThumbnail(_ path: String,_ quality: NSNumber,_ position: NSNumber,_ result: FlutterResult) {
         if let bitmap = getBitMap(path,quality,position,result) {
             result(bitmap)
         }
     }
     
-    private func getThumbnailWithFile(_ path: String,_ quality: NSNumber,_ position: NSNumber,_ result: FlutterResult) {
+    private func getFileThumbnail(_ path: String,_ quality: NSNumber,_ position: NSNumber,_ result: FlutterResult) {
         let fileName = Utility.getFileName(path)
         let url = Utility.getPathUrl("\(Utility.basePath())/\(fileName).jpg")
         Utility.deleteFile(path)
         if let bitmap = getBitMap(path,quality,position,result) {
             guard (try? bitmap.write(to: url)) != nil else {
-                return result(FlutterError(code: channelName,message: "getThumbnailWithFile error",details: "getThumbnailWithFile error"))
+                return result(FlutterError(code: channelName,message: "getFileThumbnail error",details: "getFileThumbnail error"))
             }
             result(Utility.excludeFileProtocol(url.absoluteString))
         }
@@ -140,12 +140,14 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
     
     private func getExportPreset(_ quality: NSNumber)->String {
         switch(quality) {
+        case 1:
+            return AVAssetExportPresetLowQuality    
         case 2:
             return AVAssetExportPresetMediumQuality
         case 3:
             return AVAssetExportPresetHighestQuality
         default:
-            return AVAssetExportPresetLowQuality
+            return AVAssetExportPresetMediumQuality
         }
     }
     

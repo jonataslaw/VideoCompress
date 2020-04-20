@@ -10,7 +10,7 @@ import java.io.IOException
 class ThumbnailUtility(channelName: String) {
     private val utility = Utility(channelName)
 
-    fun getThumbnail(path: String, quality: Int, position: Long, result: MethodChannel.Result) {
+    fun getByteThumbnail(path: String, quality: Int, position: Long, result: MethodChannel.Result) {
         val bmp = utility.getBitmap(path, position, result)
 
         val stream = ByteArrayOutputStream()
@@ -20,7 +20,7 @@ class ThumbnailUtility(channelName: String) {
         result.success(byteArray.toList().toByteArray())
     }
 
-    fun getThumbnailWithFile(context: Context, path: String, quality: Int, position: Long,
+    fun getFileThumbnail(context: Context, path: String, quality: Int, position: Long,
                              result: MethodChannel.Result) {
         val bmp = utility.getBitmap(path, position, result)
 

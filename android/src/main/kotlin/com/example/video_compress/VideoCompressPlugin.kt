@@ -28,17 +28,17 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
 
         when (call.method) {
-            "getThumbnail" -> {
+            "getByteThumbnail" -> {
                 val path = call.argument<String>("path")
                 val quality = call.argument<Int>("quality")!!
                 val position = call.argument<Int>("position")!! // to long
-                ThumbnailUtility(channelName).getThumbnail(path!!, quality, position.toLong(), result)
+                ThumbnailUtility(channelName).getByteThumbnail(path!!, quality, position.toLong(), result)
             }
-            "getThumbnailWithFile" -> {
+            "getFileThumbnail" -> {
                 val path = call.argument<String>("path")
                 val quality = call.argument<Int>("quality")!!
                 val position = call.argument<Int>("position")!! // to long
-                ThumbnailUtility("video_compress").getThumbnailWithFile(context, path!!, quality,
+                ThumbnailUtility("video_compress").getFileThumbnail(context, path!!, quality,
                         position.toLong(), result)
             }
             "getMediaInfo" -> {
@@ -47,6 +47,10 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
             }
             "deleteAllCache" -> {
                 result.success(Utility(channelName).deleteAllCache(context, result));
+            }
+            "cancelCompression" -> {
+                result.success(false);
+                //TODO: Made Transcoder.into Global to call Transcoder.cancel(true); here
             }
             "compressVideo" -> {
                 val path = call.argument<String>("path")!!
@@ -65,12 +69,12 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
 
                 when (quality) {
 
-                   0 -> {
+                    0 -> {
                       strategy = DefaultVideoStrategy.atMost(720).build()
-                   }
+                    }
 
                     1 -> {
-                        strategy = DefaultVideoStrategy.atMost(340).build()
+                        strategy = DefaultVideoStrategy.atMost(360).build()
                     }
                     2 -> {
                         strategy = DefaultVideoStrategy.atMost(640).build()

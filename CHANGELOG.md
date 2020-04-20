@@ -13,3 +13,7 @@
 
 ## 1.0.0
 - release new version
+
+## 2.0.0
+- refactor code
+Breaking changes, call VideoCompress.method directly, without having to instantiate it.

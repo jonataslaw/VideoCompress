@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
     if (mounted) {
       final file = await ImagePicker.pickVideo(source: ImageSource.camera);
       if (file?.path != null) {
-        final thumbnail = await _flutterVideoCompress.getThumbnail(
+        final thumbnail = await _flutterVideoCompress.getByteThumbnail(
           file.path,
           quality: 50,
           position: -1,
@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
           _image = thumbnail;
         });
 
-        final resultFile = await _flutterVideoCompress.getThumbnailWithFile(
+        final resultFile = await _flutterVideoCompress.getFileThumbnail(
           file.path,
           quality: 50,
           position: -1,
