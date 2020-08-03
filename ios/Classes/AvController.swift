@@ -8,7 +8,19 @@ class AvController: NSObject {
     }
     
     public func getTrack(_ asset: AVURLAsset)->AVAssetTrack? {
-        return asset.tracks(withMediaType: AVMediaType.video).first!
+        var track : AVAssetTrack? = nil
+        let group = DispatchGroup()
+        group.enter()
+        asset.loadValuesAsynchronously(forKeys: ["tracks"], completionHandler: {
+            var error: NSError? = nil;
+            let status = asset.statusOfValue(forKey: "tracks", error: &error)
+            if (status == .loaded) {
+                track = asset.tracks(withMediaType: AVMediaType.video).first
+            }
+            group.leave()
+        })
+        group.wait()
+        return track
     }
     
     public func getVideoOrientation(_ path:String)-> Int? {
