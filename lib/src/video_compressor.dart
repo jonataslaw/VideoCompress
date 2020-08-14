@@ -20,12 +20,12 @@ class VideoCompress {
     _channel.setMethodCallHandler(_progresCallback);
   }
 
-  static const _channel = const MethodChannel('video_compress');
+  final _channel = const MethodChannel('video_compress');
 
   /// Check compress state
-  static bool get isCompressing => _isCompressing;
+  bool get isCompressing => _isCompressing;
 
-  static bool _isCompressing = false;
+  bool _isCompressing = false;
 
   Future<void> _progresCallback(MethodCall call) async {
     switch (call.method) {
@@ -33,15 +33,15 @@ class VideoCompress {
         final progress = double.tryParse(call.arguments.toString());
         if (progress != null) compressProgress$.next(progress);
         break;
+      default:
+        print('Progress callback: ${call.method}');
     }
   }
 
   /// Subscribe the compress progress
-  static ObservableBuilder<double> compressProgress$ =
-      ObservableBuilder<double>();
+  ObservableBuilder<double> compressProgress$ = ObservableBuilder<double>();
 
-  static Future<T> _invoke<T>(String name,
-      [Map<String, dynamic> params]) async {
+  Future<T> _invoke<T>(String name, [Map<String, dynamic> params]) async {
     T result;
     try {
       result = params != null
@@ -58,7 +58,7 @@ class VideoCompress {
   /// getByteThumbnail return [Future<Uint8List>],
   /// quality can be controlled by [quality] from 1 to 100,
   /// select the position unit in the video by [position] is seconds
-  static Future<Uint8List> getByteThumbnail(
+  Future<Uint8List> getByteThumbnail(
     String path, {
     int quality = 100,
     int position = -1,
@@ -76,7 +76,7 @@ class VideoCompress {
   /// getFileThumbnail return [Future<File>]
   /// quality can be controlled by [quality] from 1 to 100,
   /// select the position unit in the video by [position] is seconds
-  static Future<File> getFileThumbnail(
+  Future<File> getFileThumbnail(
     String path, {
     int quality = 100,
     int position = -1,
@@ -104,7 +104,7 @@ class VideoCompress {
   /// final info = await _flutterVideoCompress.getMediaInfo(file.path);
   /// debugPrint(info.toJson());
   /// ```
-  static Future<MediaInfo> getMediaInfo(String path) async {
+  Future<MediaInfo> getMediaInfo(String path) async {
     assert(path != null);
     final jsonStr = await _invoke<String>('getMediaInfo', {'path': path});
     final jsonMap = json.decode(jsonStr);
@@ -126,7 +126,7 @@ class VideoCompress {
   /// );
   /// debugPrint(info.toJson());
   /// ```
-  static Future<MediaInfo> compressVideo(
+  Future<MediaInfo> compressVideo(
     String path, {
     VideoQuality quality = VideoQuality.DefaultQuality,
     bool deleteOrigin = false,
@@ -162,13 +162,13 @@ class VideoCompress {
 
   /// stop compressing the file that is currently being compressed.
   /// If there is no compression process, nothing will happen.
-  static Future<void> cancelCompression() async {
+  Future<void> cancelCompression() async {
     await _invoke<void>('cancelCompression');
   }
 
   /// delete the cache folder, please do not put other things
   /// in the folder of this plugin, it will be cleared
-  static Future<bool> deleteAllCache() async {
+  Future<bool> deleteAllCache() async {
     return await _invoke<bool>('deleteAllCache');
   }
 }
