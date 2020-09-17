@@ -37,16 +37,12 @@ class VideoCompress {
   }
 
   /// Subscribe the compress progress
-  static ObservableBuilder<double> compressProgress$ =
-      ObservableBuilder<double>();
+  static ObservableBuilder<double> compressProgress$ = ObservableBuilder<double>();
 
-  static Future<T> _invoke<T>(String name,
-      [Map<String, dynamic> params]) async {
+  static Future<T> _invoke<T>(String name, [Map<String, dynamic> params]) async {
     T result;
     try {
-      result = params != null
-          ? await _channel.invokeMethod(name, params)
-          : await _channel.invokeMethod(name);
+      result = params != null ? await _channel.invokeMethod(name, params) : await _channel.invokeMethod(name);
     } on PlatformException catch (e) {
       debugPrint('''Error from VideoCompress: 
       Method: $name
@@ -174,19 +170,22 @@ class VideoCompress {
 }
 
 class ObservableBuilder<T> {
-  final StreamController<T> _observable = StreamController();
+  StreamController<T> _observable = StreamController();
   bool notSubscribed = true;
 
   void next(T value) {
     _observable.add(value);
   }
 
-  Subscription subscribe(void onData(T event),
-      {Function onError, void onDone(), bool cancelOnError}) {
+  Subscription subscribe(void onData(T event), {Function onError, void onDone(), bool cancelOnError}) {
     notSubscribed = false;
-    _observable.stream.listen(onData,
-        onError: onError, onDone: onDone, cancelOnError: cancelOnError);
-    return Subscription(_observable.close);
+    _observable.stream.listen(onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+    return Subscription(() {
+      _observable.close();
+
+      // Create a new instance to avoid errors
+      _observable = StreamController();
+    });
   }
 }
 
