@@ -8,8 +8,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSURL *)getPathUrl:(NSString *)path;
 
-+ (NSString *)stripFileExtension:(NSString *)fileName;
-
 + (NSString *)getFileName:(NSString *)path;
 
 + (void)deleteFile:(NSString *)path;

@@ -22,12 +22,8 @@
     return [NSURL fileURLWithPath:[self excludeFileProtocol:path]];
 }
 
-+ (NSString *)stripFileExtension:(NSString *)fileName {
-    return [fileName stringByDeletingPathExtension];
-}
-
 + (NSString *)getFileName:(NSString *)path {
-    return [self stripFileExtension:[path lastPathComponent]];
+    return [[path lastPathComponent] stringByDeletingPathExtension];
 }
 
 + (void)deleteFile:(NSString *)path {
