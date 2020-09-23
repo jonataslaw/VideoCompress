@@ -31,7 +31,10 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
     defaultConfig {
-        minSdkVersion 18
+        // Actually version 18 is required, but without setting to 16, we will not be
+        // able to compile this plugin under a Flutter module which hard-codes version 16
+        // https://github.com/flutter/flutter/blob/v1.16.3/packages/flutter_tools/templates/module/android/host_app_common/app.tmpl/build.gradle.tmpl#L15
+        minSdkVersion 16
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
