@@ -23,14 +23,7 @@
 }
 
 + (NSString *)stripFileExtension:(NSString *)fileName {
-    NSArray<NSString *> *components = [fileName componentsSeparatedByString:@"."];
-    if ([components count] > 1) {
-        NSArray<NSString *> * componentsWithoutExtension = [components subarrayWithRange:NSMakeRange(0,[components count] - 1)];
-        return [componentsWithoutExtension componentsJoinedByString:@"."];
-        
-    } else {
-        return fileName;
-    }
+    return [fileName stringByDeletingPathExtension];
 }
 
 + (NSString *)getFileName:(NSString *)path {
