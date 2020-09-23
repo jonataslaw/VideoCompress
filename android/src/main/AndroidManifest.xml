@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.video_compress">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- Ignore minSdkVersion in Transcoder library, see build.gradle for more info -->
+    <uses-sdk tools:overrideLibrary="com.otaliastudios.transcoder, com.otaliastudios.opengl" />
 </manifest>
