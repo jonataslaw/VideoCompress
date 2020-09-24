@@ -2,7 +2,7 @@ import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final selectVideoBtnFinder = find.byValueKey('select_video');
+  final useSampleVideoBtnFinder = find.byValueKey('use_sample_video');
   final clearCacheBtnFinder = find.byValueKey('clear_cache');
   final statusFinder = find.byValueKey('status');
   final outputFileSizeFinder = find.byValueKey('output_file_size');
@@ -23,7 +23,7 @@ void main() {
     expect(await driver.getText(statusFinder), 'init');
 
     // Initialize compression
-    await driver.tap(selectVideoBtnFinder);
+    await driver.tap(useSampleVideoBtnFinder);
 
     // Wait for compression to finish
     await driver.waitFor(find.text('compressed'));

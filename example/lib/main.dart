@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:video_compress/video_compress.dart';
 
 void main() {
@@ -63,6 +65,22 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<void> compressVideo(String path) async {
+    _status = 'compressing';
+    setState(() {});
+
+    final info = await VideoCompress.compressVideo(
+      path,
+      quality: VideoQuality.MediumQuality,
+      deleteOrigin: false,
+    );
+
+    _status = 'compressed';
+    _outputPath = info.path;
+    await updateOutputState();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -122,23 +140,26 @@ class _MyHomePageState extends State<MyHomePage> {
               key: Key('output_file_size'),
             ),
             RaisedButton(
+              key: Key('use_sample_video'),
+              onPressed: () async {
+                final data = await rootBundle.load(
+                  'assets/samples/sample.mp4',
+                );
+                final bytes = data.buffer.asUint8List();
+                final dir = await getTemporaryDirectory();
+                final file =
+                    await File('${dir.path}/sample.mp4').writeAsBytes(bytes);
+
+                await this.compressVideo(file.path);
+              },
+              child: const Text('Use sample video'),
+            ),
+            RaisedButton(
               key: Key('select_video'),
               onPressed: () async {
                 File file =
                     await ImagePicker.pickVideo(source: ImageSource.gallery);
-                _status = 'compressing';
-                setState(() {});
-
-                final info = await VideoCompress.compressVideo(
-                  file.path,
-                  quality: VideoQuality.MediumQuality,
-                  deleteOrigin: false,
-                );
-
-                _status = 'compressed';
-                _outputPath = info.path;
-                await this.updateOutputState();
-                setState(() {});
+                await this.compressVideo(file.path);
               },
               child: const Text('Select video'),
             ),
