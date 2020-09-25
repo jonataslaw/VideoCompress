@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
@@ -28,9 +30,11 @@ void main() {
     // Wait for compression to finish
     await driver.waitFor(find.text('compressed'));
 
-    // Output file should not be empty
-    final outputFileSize = await driver.getText(outputFileSizeFinder);
-    expect(int.parse(outputFileSize), greaterThan(0));
+    // Output file should not be empty and should be smaller than original size
+    final originalSize = await File('assets/samples/sample.mp4').length();
+    final outputSize = int.parse(await driver.getText(outputFileSizeFinder));
+    expect(outputSize, greaterThan(0));
+    expect(outputSize, lessThan(originalSize));
 
     // Clear the cache
     await driver.tap(clearCacheBtnFinder);
