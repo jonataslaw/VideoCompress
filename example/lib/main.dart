@@ -1,6 +1,9 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:video_compress/video_compress.dart';
 
 void main() {
@@ -49,7 +52,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String _counter = "video";
+  String _status = "init";
+  String _outputPath = "";
+  String _outputFileSize = "";
+
+  Future<void> updateOutputState() async {
+    final outputFile = File(_outputPath);
+    if (await outputFile.exists()) {
+      _outputFileSize = (await outputFile.length()).toString();
+    } else {
+      _outputFileSize = "-1";
+    }
+  }
+
+  Future<void> compressVideo(String path) async {
+    _status = 'compressing';
+    setState(() {});
+
+    final info = await VideoCompress.compressVideo(
+      path,
+      quality: VideoQuality.MediumQuality,
+      deleteOrigin: false,
+    );
+
+    _status = 'compressed';
+    _outputPath = info.path;
+    await updateOutputState();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,29 +116,66 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
+              'Status:',
             ),
             Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              '$_status',
+              style: Theme.of(context).textTheme.bodyText1,
+              key: Key('status'),
+            ),
+            Text(
+              'Output Path:',
+            ),
+            Text(
+              '$_outputPath',
+              style: Theme.of(context).textTheme.bodyText1,
+              key: Key('output_path'),
+            ),
+            Text(
+              'Output File Size:',
+            ),
+            Text(
+              '$_outputFileSize',
+              style: Theme.of(context).textTheme.bodyText1,
+              key: Key('output_file_size'),
+            ),
+            RaisedButton(
+              key: Key('use_sample_video'),
+              onPressed: () async {
+                final data = await rootBundle.load(
+                  'assets/samples/sample.mp4',
+                );
+                final bytes = data.buffer.asUint8List();
+                final dir = await getTemporaryDirectory();
+                final file =
+                    await File('${dir.path}/sample.mp4').writeAsBytes(bytes);
+
+                await this.compressVideo(file.path);
+              },
+              child: const Text('Use sample video'),
+            ),
+            RaisedButton(
+              key: Key('select_video'),
+              onPressed: () async {
+                File file =
+                    await ImagePicker.pickVideo(source: ImageSource.gallery);
+                await this.compressVideo(file.path);
+              },
+              child: const Text('Select video'),
+            ),
+            RaisedButton(
+              key: Key('clear_cache'),
+              onPressed: () async {
+                await VideoCompress.deleteAllCache();
+
+                _status = 'cache cleared';
+                await this.updateOutputState();
+                setState(() {});
+              },
+              child: const Text('Clear cache'),
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          File file = await ImagePicker.pickVideo(source: ImageSource.gallery);
-          final info = await VideoCompress.compressVideo(
-            file.path,
-            quality: VideoQuality.MediumQuality,
-            deleteOrigin: false,
-          );
-
-          _counter = info.path;
-          setState(() {});
-        },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
       ),
     );
   }

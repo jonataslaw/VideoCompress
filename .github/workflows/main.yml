@@ -1,0 +1,34 @@
+name: Integration Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  iOS-Test:
+    runs-on: macos-latest
+    timeout-minutes: 15
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: subosito/flutter-action@v1
+    - run: flutter emulators --launch apple_ios_simulator
+    - run: flutter drive --target=test_driver/app.dart
+      working-directory: example
+
+  Android-Test:
+    # Linux machine doesn't support running Android emulator due to lack of nested virtualization
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: subosito/flutter-action@v1
+    - run: $ANDROID_HOME/tools/bin/sdkmanager "system-images;android-27;google_apis_playstore;x86"
+    - run: flutter emulators --create
+    - run: flutter emulators --launch flutter_emulator
+    - run: adb wait-for-device
+    - run: flutter drive --target=test_driver/app.dart
+      working-directory: example

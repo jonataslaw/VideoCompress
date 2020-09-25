@@ -2,14 +2,12 @@ package com.example.video_compress
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import com.otaliastudios.transcoder.Transcoder
 import com.otaliastudios.transcoder.TranscoderListener
-import com.otaliastudios.transcoder.strategy.DefaultVideoStrategies
 import com.otaliastudios.transcoder.strategy.DefaultVideoStrategy
+import com.otaliastudios.transcoder.strategy.PassThroughTrackStrategy
 import com.otaliastudios.transcoder.strategy.TrackStrategy
-import com.otaliastudios.transcoder.strategy.size.*
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -94,6 +92,9 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
                 Transcoder.into(destPath!!)
                         .addDataSource(context, Uri.parse(path))
                         .setVideoTrackStrategy(strategy)
+                        // Don't transcode audio to workaround
+                        // https://github.com/natario1/Transcoder/issues/102
+                        .setAudioTrackStrategy(PassThroughTrackStrategy())
                         .setListener(object : TranscoderListener {
                             override fun onTranscodeProgress(progress: Double) {
                                 channel.invokeMethod("updateProgress", progress * 100.00)
