@@ -29,6 +29,6 @@ jobs:
     - run: $ANDROID_HOME/tools/bin/sdkmanager "system-images;android-27;google_apis_playstore;x86"
     - run: flutter emulators --create
     - run: flutter emulators --launch flutter_emulator
-    - run: adb wait-for-device
+    - run: until adb shell true; do sleep 1; done
     - run: flutter drive --target=test_driver/app.dart
       working-directory: example
