@@ -21,14 +21,18 @@ jobs:
   Android-Test:
     # Linux machine doesn't support running Android emulator due to lack of nested virtualization
     runs-on: macos-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
 
     steps:
     - uses: actions/checkout@v2
     - uses: subosito/flutter-action@v1
     - run: $ANDROID_HOME/tools/bin/sdkmanager "system-images;android-27;google_apis_playstore;x86"
+    # Make sure adb server is started and the private key is generated to be picked up by the
+    # emulator
+    - run: adb devices
     - run: flutter emulators --create
     - run: flutter emulators --launch flutter_emulator
-    - run: adb wait-for-device
+    # Use this instead of wait-for-device to see errors (e.g. Unauthorized)
+    - run: until adb shell true; do sleep 1; done
     - run: flutter drive --target=test_driver/app.dart
       working-directory: example
