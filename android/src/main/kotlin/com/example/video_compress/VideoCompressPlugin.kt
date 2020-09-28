@@ -69,33 +69,41 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                 val startTime = call.argument<Int>("startTime")
                 val duration = call.argument<Int>("duration")
                 val includeAudio = call.argument<Boolean>("includeAudio")
-                val frameRate = if (call.argument<Int>("frameRate")==null) 30 else call.argument<Int>("frameRate")
+
+                // Transcoder will automatically cap this framerate to input framerate
+                val frameRate = call.argument<Int>("frameRate") ?: 30
 
                 val tempDir: String = context.getExternalFilesDir("video_compress")!!.absolutePath
                 val out = SimpleDateFormat("yyyy-MM-dd hh-mm-ss").format(Date())
                 val destPath: String = tempDir + File.separator + "VID_" + out + ".mp4"
 
-                var strategy: TrackStrategy = DefaultVideoStrategy.atMost(340).build();
+                val strategy: TrackStrategy
 
                 when (quality) {
-
-                    0 -> {
-                      strategy = DefaultVideoStrategy.atMost(720).build()
-                    }
-
+                    // LowQuality
                     1 -> {
-                        strategy = DefaultVideoStrategy.atMost(360).build()
+                        strategy = DefaultVideoStrategy.atMost(240)
+                                .frameRate(frameRate)
+                                .build()
                     }
+                    // MediumQuality
                     2 -> {
-                        strategy = DefaultVideoStrategy.atMost(640).build()
+                        strategy = DefaultVideoStrategy.atMost(480)
+                                .frameRate(frameRate)
+                                .build()
                     }
+                    // HighQuality
                     3 -> {
-
-                        assert(value = frameRate != null)
                         strategy = DefaultVideoStrategy.Builder()
                                 .keyFrameInterval(3f)
                                 .bitRate(1280 * 720 * 4.toLong())
-                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .frameRate(frameRate)
+                                .build()
+                    }
+                    // DefaultQuality
+                    else -> {
+                        strategy = DefaultVideoStrategy.atMost(720)
+                                .frameRate(frameRate)
                                 .build()
                     }
                 }
