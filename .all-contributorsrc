@@ -40,6 +40,15 @@
       "contributions": [
         "maintenance"
       ]
+    },
+    {
+      "login": "marcobraghim",
+      "name": "Marco A. Braghim",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2068045?v=4",
+      "profile": "https://www.thizer.com",
+      "contributions": [
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,

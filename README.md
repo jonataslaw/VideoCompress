@@ -1,6 +1,6 @@
 # video_compress
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Compress videos, remove audio, manipulate thumbnails, and make your video compatible with all platforms through this lightweight and efficient library.
@@ -128,6 +128,7 @@ Thanks goes to these wonderful people:
     <td align="center"><a href="https://github.com/Serdnad"><img src="https://avatars1.githubusercontent.com/u/4723453?v=4" width="100px;" alt=""/><br /><sub><b>Andres Gutierrez</b></sub></a><br /><a href="#maintenance-Serdnad" title="Maintenance">🚧</a></td>
     <td align="center"><a href="https://github.com/jonataslaw"><img src="https://avatars2.githubusercontent.com/u/35742643?v=4" width="100px;" alt=""/><br /><sub><b>Jonny Borges</b></sub></a><br /><a href="https://github.com/jonataslaw/VideoCompress/commits?author=jonataslaw" title="Code">💻</a></td>
     <td align="center"><a href="http://www.tiboutshaik.com"><img src="https://avatars0.githubusercontent.com/u/13279066?v=4" width="100px;" alt=""/><br /><sub><b>Tibout Shaik</b></sub></a><br /><a href="#maintenance-Martibis" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://www.thizer.com"><img src="https://avatars3.githubusercontent.com/u/2068045?v=4" width="100px;" alt=""/><br /><sub><b>Marco A. Braghim</b></sub></a><br /><a href="#maintenance-marcobraghim" title="Maintenance">🚧</a></td>
   </tr>
 </table>
 
