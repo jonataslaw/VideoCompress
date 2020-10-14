@@ -152,8 +152,12 @@ class VideoCompress {
       'frameRate': frameRate,
     });
     _isCompressing = false;
-    final jsonMap = json.decode(jsonStr);
-    return MediaInfo.fromJson(jsonMap);
+    if (jsonStr != null) {
+      final jsonMap = json.decode(jsonStr);
+      return MediaInfo.fromJson(jsonMap);
+    } else {
+      return null;
+    }
   }
 
   /// stop compressing the file that is currently being compressed.
