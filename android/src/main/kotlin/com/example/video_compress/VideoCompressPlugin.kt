@@ -2,14 +2,13 @@ package com.example.video_compress
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import com.otaliastudios.transcoder.Transcoder
 import com.otaliastudios.transcoder.TranscoderListener
-import com.otaliastudios.transcoder.strategy.DefaultVideoStrategies
+import com.otaliastudios.transcoder.strategy.DefaultAudioStrategy
 import com.otaliastudios.transcoder.strategy.DefaultVideoStrategy
+import com.otaliastudios.transcoder.strategy.RemoveTrackStrategy
 import com.otaliastudios.transcoder.strategy.TrackStrategy
-import com.otaliastudios.transcoder.strategy.size.*
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -58,31 +57,32 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
                 val deleteOrigin = call.argument<Boolean>("deleteOrigin")!!
                 val startTime = call.argument<Int>("startTime")
                 val duration = call.argument<Int>("duration")
-                val includeAudio = call.argument<Boolean>("includeAudio")
+                val includeAudio = call.argument<Boolean>("includeAudio")!!
                 val frameRate = if (call.argument<Int>("frameRate")==null) 30 else call.argument<Int>("frameRate")
 
                 val tempDir: String = this.context.getExternalFilesDir("video_compress")!!.absolutePath
                 val out = SimpleDateFormat("yyyy-MM-dd hh-mm-ss").format(Date())
                 val destPath: String = tempDir + File.separator + "VID_" + out + ".mp4"
 
-                var strategy: TrackStrategy = DefaultVideoStrategy.atMost(340).build();
+                var videoTrackStrategy: TrackStrategy = DefaultVideoStrategy.atMost(340).build();
+                val audioTrackStrategy: TrackStrategy
 
                 when (quality) {
 
                     0 -> {
-                      strategy = DefaultVideoStrategy.atMost(720).build()
+                      videoTrackStrategy = DefaultVideoStrategy.atMost(720).build()
                     }
 
                     1 -> {
-                        strategy = DefaultVideoStrategy.atMost(360).build()
+                        videoTrackStrategy = DefaultVideoStrategy.atMost(360).build()
                     }
                     2 -> {
-                        strategy = DefaultVideoStrategy.atMost(640).build()
+                        videoTrackStrategy = DefaultVideoStrategy.atMost(640).build()
                     }
                     3 -> {
 
                         assert(value = frameRate != null)
-                        strategy = DefaultVideoStrategy.Builder()
+                        videoTrackStrategy = DefaultVideoStrategy.Builder()
                                 .keyFrameInterval(3f)
                                 .bitRate(1280 * 720 * 4.toLong())
                                 .frameRate(frameRate!!) // will be capped to the input frameRate
@@ -90,10 +90,23 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
                     }
                 }
 
+                audioTrackStrategy = if (includeAudio) {
+                    val sampleRate = DefaultAudioStrategy.SAMPLE_RATE_AS_INPUT
+                    val channels = DefaultAudioStrategy.CHANNELS_AS_INPUT
+
+                    DefaultAudioStrategy.builder()
+                        .channels(channels)
+                        .sampleRate(sampleRate)
+                        .build()
+                } else {
+                    RemoveTrackStrategy()
+                }
+
 
                 Transcoder.into(destPath!!)
                         .addDataSource(context, Uri.parse(path))
-                        .setVideoTrackStrategy(strategy)
+                        .setAudioTrackStrategy(audioTrackStrategy)
+                        .setVideoTrackStrategy(videoTrackStrategy)
                         .setListener(object : TranscoderListener {
                             override fun onTranscodeProgress(progress: Double) {
                                 channel.invokeMethod("updateProgress", progress * 100.00)
