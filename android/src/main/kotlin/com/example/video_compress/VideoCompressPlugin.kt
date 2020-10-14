@@ -10,6 +10,7 @@ import com.otaliastudios.transcoder.strategy.DefaultVideoStrategies
 import com.otaliastudios.transcoder.strategy.DefaultVideoStrategy
 import com.otaliastudios.transcoder.strategy.TrackStrategy
 import com.otaliastudios.transcoder.strategy.size.*
+import com.otaliastudios.transcoder.internal.Logger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -24,6 +25,8 @@ import java.util.*
  */
 class VideoCompressPlugin private constructor(private val activity: Activity, private val context: Context, private val channel: MethodChannel) : MethodCallHandler {
 
+    private val TAG = "VideoCompressPlugin"
+    private val LOG = Logger(TAG)
     var channelName = "video_compress"
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
 
@@ -47,6 +50,11 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
             }
             "deleteAllCache" -> {
                 result.success(Utility(channelName).deleteAllCache(context, result));
+            }
+            "setLogLevel" -> {
+                val logLevel = call.argument<Int>("logLevel")!!
+                Logger.setLogLevel(logLevel)
+                result.success(true);
             }
             "cancelCompression" -> {
                 result.success(false);

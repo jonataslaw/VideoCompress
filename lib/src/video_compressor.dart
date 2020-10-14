@@ -167,6 +167,12 @@ class VideoCompress {
   static Future<bool> deleteAllCache() async {
     return await _invoke<bool>('deleteAllCache');
   }
+
+  static Future<void> setLogLevel(int logLevel) async {
+    return await _invoke<void>('setLogLevel', {
+      'logLevel': logLevel,
+    });
+  }
 }
 
 class ObservableBuilder<T> {

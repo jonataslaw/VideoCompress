@@ -98,6 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           File file = await ImagePicker.pickVideo(source: ImageSource.gallery);
+          await VideoCompress.setLogLevel(3);
           final info = await VideoCompress.compressVideo(
             file.path,
             quality: VideoQuality.MediumQuality,
