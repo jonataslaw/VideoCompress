@@ -1,6 +1,6 @@
 # video_compress
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Compress videos, remove audio, manipulate thumbnails, and make your video compatible with all platforms through this lightweight and efficient library.
@@ -127,6 +127,13 @@ Thanks goes to these wonderful people:
     <td align="center"><a href="http://projectmeet.app"><img src="https://avatars1.githubusercontent.com/u/42075898?v=4" width="100px;" alt=""/><br /><sub><b>khainhero</b></sub></a><br /><a href="#maintenance-khainhero" title="Maintenance">🚧</a></td>
     <td align="center"><a href="https://github.com/Serdnad"><img src="https://avatars1.githubusercontent.com/u/4723453?v=4" width="100px;" alt=""/><br /><sub><b>Andres Gutierrez</b></sub></a><br /><a href="#maintenance-Serdnad" title="Maintenance">🚧</a></td>
     <td align="center"><a href="https://github.com/jonataslaw"><img src="https://avatars2.githubusercontent.com/u/35742643?v=4" width="100px;" alt=""/><br /><sub><b>Jonny Borges</b></sub></a><br /><a href="https://github.com/jonataslaw/VideoCompress/commits?author=jonataslaw" title="Code">💻</a></td>
+    <td align="center"><a href="http://www.tiboutshaik.com"><img src="https://avatars0.githubusercontent.com/u/13279066?v=4" width="100px;" alt=""/><br /><sub><b>Tibout Shaik</b></sub></a><br /><a href="#maintenance-Martibis" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://www.thizer.com"><img src="https://avatars3.githubusercontent.com/u/2068045?v=4" width="100px;" alt=""/><br /><sub><b>Marco A. Braghim</b></sub></a><br /><a href="#maintenance-marcobraghim" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://github.com/ppornkitpras-agoda"><img src="https://avatars3.githubusercontent.com/u/54128106?v=4" width="100px;" alt=""/><br /><sub><b>ppornkitpras-agoda</b></sub></a><br /><a href="#maintenance-ppornkitpras-agoda" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://github.com/snowb1shop"><img src="https://avatars3.githubusercontent.com/u/18536122?v=4" width="100px;" alt=""/><br /><sub><b>Rafał Płonka</b></sub></a><br /><a href="#maintenance-snowb1shop" title="Maintenance">🚧</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/yanivshaked"><img src="https://avatars3.githubusercontent.com/u/13107481?v=4" width="100px;" alt=""/><br /><sub><b>Yaniv Shaked</b></sub></a><br /><a href="#maintenance-yanivshaked" title="Maintenance">🚧</a></td>
   </tr>
 </table>
 
