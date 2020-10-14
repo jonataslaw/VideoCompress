@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_compress/video_compress.dart';
@@ -105,7 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          File file = await ImagePicker.pickVideo(source: ImageSource.gallery);
+          final file =
+              await ImagePicker().getVideo(source: ImageSource.gallery);
           await VideoCompress.setLogLevel(0);
           final info = await VideoCompress.compressVideo(
             file.path,
@@ -114,9 +114,10 @@ class _MyHomePageState extends State<MyHomePage> {
             includeAudio: true,
           );
           if (info != null) {
-            _counter = info.path;
+            setState(() {
+              _counter = info.path;
+            });
           }
-          setState(() {});
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
