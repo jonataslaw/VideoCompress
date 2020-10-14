@@ -1,14 +1,17 @@
 package com.example.video_compress
 
-import android.app.Activity
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.otaliastudios.transcoder.Transcoder
 import com.otaliastudios.transcoder.TranscoderListener
 import com.otaliastudios.transcoder.strategy.DefaultAudioStrategy
 import com.otaliastudios.transcoder.strategy.DefaultVideoStrategy
 import com.otaliastudios.transcoder.strategy.RemoveTrackStrategy
 import com.otaliastudios.transcoder.strategy.TrackStrategy
+import com.otaliastudios.transcoder.strategy.size.*
+import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.plugin.common.BinaryMessenger
 import com.otaliastudios.transcoder.internal.Logger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -22,13 +25,24 @@ import java.util.concurrent.Future
 /**
  * VideoCompressPlugin
  */
-class VideoCompressPlugin private constructor(private val activity: Activity, private val context: Context, private val channel: MethodChannel) : MethodCallHandler {
+class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
 
+
+    private var _context: Context? = null
+    private var _channel: MethodChannel? = null
     private val TAG = "VideoCompressPlugin"
     private val LOG = Logger(TAG)
     private var transcodeFuture:Future<Void>? = null
     var channelName = "video_compress"
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        val context = _context;
+        val channel = _channel;
+
+        if (context == null || channel == null) {
+            Log.w(TAG, "Calling VideoCompress plugin before initialization")
+            return
+        }
 
         when (call.method) {
             "getByteThumbnail" -> {
@@ -69,7 +83,7 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
                 val includeAudio = call.argument<Boolean>("includeAudio")!!
                 val frameRate = if (call.argument<Int>("frameRate")==null) 30 else call.argument<Int>("frameRate")
 
-                val tempDir: String = this.context.getExternalFilesDir("video_compress")!!.absolutePath
+                val tempDir: String = context.getExternalFilesDir("video_compress")!!.absolutePath
                 val out = SimpleDateFormat("yyyy-MM-dd hh-mm-ss").format(Date())
                 val destPath: String = tempDir + File.separator + "VID_" + out + ".mp4"
 
@@ -145,14 +159,30 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
         }
     }
 
+    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        init(binding.applicationContext, binding.binaryMessenger)
+    }
+
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        _channel?.setMethodCallHandler(null)
+        _context = null
+        _channel = null
+    }
+
+    private fun init(context: Context, messenger: BinaryMessenger) {
+        val channel = MethodChannel(messenger, channelName)
+        channel.setMethodCallHandler(this)
+        _context = context
+        _channel = channel
+    }
+
     companion object {
-        const val ACTIVITY_2_REQUEST = 999
+        private const val TAG = "video_compress"
 
         @JvmStatic
         fun registerWith(registrar: Registrar) {
-            val channel = MethodChannel(registrar.messenger(), "video_compress")
-            val instance = VideoCompressPlugin(registrar.activity(), registrar.context(), channel)
-            channel.setMethodCallHandler(instance)
+            val instance = VideoCompressPlugin()
+            instance.init(registrar.context(), registrar.messenger())
         }
     }
 
