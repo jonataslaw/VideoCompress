@@ -58,6 +58,15 @@
       "contributions": [
         "maintenance"
       ]
+    },
+    {
+      "login": "snowb1shop",
+      "name": "Rafał Płonka",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/18536122?v=4",
+      "profile": "https://github.com/snowb1shop",
+      "contributions": [
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,
