@@ -15,7 +15,6 @@ class _VideoCompressImpl extends IVideoCompress {
     initProcessCallback();
   }
 
-  factory _VideoCompressImpl() => instance;
   static _VideoCompressImpl _instance;
   static _VideoCompressImpl get instance {
     return _instance ??= _VideoCompressImpl._();
@@ -139,6 +138,8 @@ extension Compress on IVideoCompress {
       debugPrint('''VideoCompress: You can try to subscribe to the 
       compressProgress\$ stream to know the compressing state.''');
     }
+    // ignore: invalid_use_of_protected_member
+    setProcessingStatus(true);
     final jsonStr = await _invoke<String>('compressVideo', {
       'path': path,
       'quality': quality.index,
