@@ -9,6 +9,7 @@ import com.otaliastudios.transcoder.strategy.DefaultAudioStrategy
 import com.otaliastudios.transcoder.strategy.DefaultVideoStrategy
 import com.otaliastudios.transcoder.strategy.RemoveTrackStrategy
 import com.otaliastudios.transcoder.strategy.TrackStrategy
+import com.otaliastudios.transcoder.internal.Logger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -16,13 +17,16 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-
+import java.util.concurrent.Future
 
 /**
  * VideoCompressPlugin
  */
 class VideoCompressPlugin private constructor(private val activity: Activity, private val context: Context, private val channel: MethodChannel) : MethodCallHandler {
 
+    private val TAG = "VideoCompressPlugin"
+    private val LOG = Logger(TAG)
+    private var transcodeFuture:Future<Void>? = null
     var channelName = "video_compress"
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
 
@@ -47,9 +51,14 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
             "deleteAllCache" -> {
                 result.success(Utility(channelName).deleteAllCache(context, result));
             }
+            "setLogLevel" -> {
+                val logLevel = call.argument<Int>("logLevel")!!
+                Logger.setLogLevel(logLevel)
+                result.success(true);
+            }
             "cancelCompression" -> {
+                transcodeFuture?.cancel(true)
                 result.success(false);
-                //TODO: Made Transcoder.into Global to call Transcoder.cancel(true); here
             }
             "compressVideo" -> {
                 val path = call.argument<String>("path")!!
@@ -103,7 +112,7 @@ class VideoCompressPlugin private constructor(private val activity: Activity, pr
                 }
 
 
-                Transcoder.into(destPath!!)
+                transcodeFuture = Transcoder.into(destPath!!)
                         .addDataSource(context, Uri.parse(path))
                         .setAudioTrackStrategy(audioTrackStrategy)
                         .setVideoTrackStrategy(videoTrackStrategy)

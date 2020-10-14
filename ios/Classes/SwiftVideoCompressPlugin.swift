@@ -49,6 +49,8 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         case "deleteAllCache":
             Utility.deleteFile(Utility.basePath(), clear: true)
             result(true)
+        case "setLogLevel":
+            result(true)
         default:
             result(FlutterMethodNotImplemented)
         }

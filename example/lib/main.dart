@@ -92,19 +92,30 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            InkWell(
+                child: Icon(
+                  Icons.cancel,
+                  size: 55,
+                ),
+                onTap: () {
+                  VideoCompress.cancelCompression();
+                })
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           File file = await ImagePicker.pickVideo(source: ImageSource.gallery);
+          await VideoCompress.setLogLevel(0);
           final info = await VideoCompress.compressVideo(
             file.path,
             quality: VideoQuality.MediumQuality,
             deleteOrigin: false,
+            includeAudio: true,
           );
-
-          _counter = info.path;
+          if (info != null) {
+            _counter = info.path;
+          }
           setState(() {});
         },
         tooltip: 'Increment',

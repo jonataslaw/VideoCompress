@@ -152,8 +152,12 @@ class VideoCompress {
       'frameRate': frameRate,
     });
     _isCompressing = false;
-    final jsonMap = json.decode(jsonStr);
-    return MediaInfo.fromJson(jsonMap);
+    if (jsonStr != null) {
+      final jsonMap = json.decode(jsonStr);
+      return MediaInfo.fromJson(jsonMap);
+    } else {
+      return null;
+    }
   }
 
   /// stop compressing the file that is currently being compressed.
@@ -166,6 +170,12 @@ class VideoCompress {
   /// in the folder of this plugin, it will be cleared
   static Future<bool> deleteAllCache() async {
     return await _invoke<bool>('deleteAllCache');
+  }
+
+  static Future<void> setLogLevel(int logLevel) async {
+    return await _invoke<void>('setLogLevel', {
+      'logLevel': logLevel,
+    });
   }
 }
 
