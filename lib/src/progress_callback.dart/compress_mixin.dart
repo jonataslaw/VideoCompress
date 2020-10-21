@@ -8,7 +8,7 @@ class CompressMixin {
 
   @protected
   void initProcessCallback() {
-    _channel.setMethodCallHandler(_progresCallback);
+    _channel.setMethodCallHandler(_progressCallback);
   }
 
   MethodChannel get channel => _channel;
@@ -22,7 +22,7 @@ class CompressMixin {
     _isCompressing = status;
   }
 
-  Future<void> _progresCallback(MethodCall call) async {
+  Future<void> _progressCallback(MethodCall call) async {
     switch (call.method) {
       case 'updateProgress':
         final progress = double.tryParse(call.arguments.toString());
