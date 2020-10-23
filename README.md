@@ -1,7 +1,32 @@
 # video_compress
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+   <a href="https://github.com/jonataslaw/VideoCompress/graphs/contributors">  
+    <img src="https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square"  
+      alt="All Contributors" />  
+  </a> 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+  <a href="https://flutter.io">  
+    <img src="https://img.shields.io/badge/Platform-Flutter-yellow.svg"  
+      alt="Platform" />  
+  </a> 
+   <a href="https://pub.dev/packages/video_compress">  
+    <img src="https://img.shields.io/pub/v/video_compress.svg"  
+      alt="Pub Package" /> 
+  </a>
+   <a href="https://opensource.org/licenses/MIT">  
+    <img src="https://img.shields.io/badge/License-MIT-red.svg"  
+      alt="License: MIT" />  
+  </a>
+  <a href="https://github.com/jonataslaw/videocompress/network">  
+    <img src="https://img.shields.io/github/forks/jonataslaw/videocompress"  
+      alt="Forks" />  
+  </a> 
+  <a href="https://github.com/jonataslaw/videocompress/stargazers">  
+    <img src="https://img.shields.io/github/stars/jonataslaw/videocompress"  
+      alt="Stars" />  
+  </a>
+  <br>
+  <br>
 
 Compress videos, remove audio, manipulate thumbnails, and make your video compatible with all platforms through this lightweight and efficient library.
 100% native code was used, we do not use FFMPEG as it is very slow, bloated and the GNU license is an obstacle for commercial applications.
@@ -10,7 +35,57 @@ All video files are encoded in an MP4 container with AAC audio that allows 100% 
 
 Works on ANDROID and IOS.
 
-### How to use
+
+
+# Table of Contents
+  - [Installing](#lets-get-started)
+  - [How to use](#how-to-use)
+    * [Imports](#imports)
+    * [Video compression](#video-compression)
+    * [Check compress state](#check-compress-state)
+    * [Get memory thumbnail from VideoPath](#get-memory-thumbnail-from-videopath)
+    * [Get File thumbnail from VideoPath](#get-file-thumbnail-from-videopath)
+    * [Get media information](#get-media-information)
+    * [delete all cache files](#delete-all-cache-files)
+    * [Listen the compression progress](#listen-the-compression-progress)
+  - [TODO](#todo)
+
+# Lets Get Started
+
+### 1. Depend on it
+Add this to your package's `pubspec.yaml` file:
+
+```yaml
+dependencies:
+  video_compress: ^2.1.0
+```
+
+### 2. Install it
+
+You can install packages from the command line:
+
+with `pub`:
+
+```css
+$  pub get
+```
+
+### 3. Import it
+
+Now in your `Dart` code, you can use: 
+
+````dart
+import 'package:video_compress/video_compress.dart';
+````
+
+# How to use
+
+### Imports
+
+````dart
+import 'package:video_compress/video_compress.dart';
+    
+````
 
 ## Video compression
 
