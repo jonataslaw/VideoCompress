@@ -80,7 +80,7 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                 val deleteOrigin = call.argument<Boolean>("deleteOrigin")!!
                 val startTime = call.argument<Int>("startTime")
                 val duration = call.argument<Int>("duration")
-                val includeAudio = call.argument<Boolean>("includeAudio")!!
+                val includeAudio = call.argument<Boolean>("includeAudio") ?: true
                 val frameRate = if (call.argument<Int>("frameRate")==null) 30 else call.argument<Int>("frameRate")
 
                 val tempDir: String = context.getExternalFilesDir("video_compress")!!.absolutePath
