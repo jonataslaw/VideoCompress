@@ -1,126 +1,306 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:video_compress/video_compress.dart';
+import 'package:image_picker/image_picker.dart' show ImagePicker, ImageSource;
+import 'package:video_player/video_player.dart';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(MyApp(title: 'Flutter Video Compress Example'));
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+class MyApp extends StatefulWidget {
+  MyApp({this.title});
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyAppState createState() => _MyAppState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  String _counter = "video";
+class _MyAppState extends State<MyApp> {
+  final _flutterVideoCompress = VideoCompress;
+
+  Subscription _subscription;
+
+  Image _thumbnailFileImage;
+
+  MediaInfo _originalVideoInfo = MediaInfo(path: '');
+  MediaInfo _compressedVideoInfo = MediaInfo(path: '');
+  String _taskName;
+  double _progressState = 0;
+
+  final _loadingStreamCtrl = StreamController<bool>.broadcast();
 
   @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            InkWell(
-                child: Icon(
-                  Icons.cancel,
-                  size: 55,
-                ),
-                onTap: () {
-                  VideoCompress.cancelCompression();
-                })
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
+  void initState() {
+    super.initState();
+    _subscription =
+        _flutterVideoCompress.compressProgress$.subscribe((progress) {
+      setState(() {
+        _progressState = progress;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _subscription.unsubscribe();
+    _loadingStreamCtrl.close();
+  }
+
+  Future<void> runFlutterVideoCompressMethods(File videoFile) async {
+    _loadingStreamCtrl.sink.add(true);
+
+    var _startDateTime = DateTime.now();
+    print('[Compressing Video] start');
+    _taskName = '[Compressing Video]';
+    final compressedVideoInfo = await _flutterVideoCompress.compressVideo(
+      videoFile.path,
+      quality: VideoQuality.HighestQuality,
+      deleteOrigin: false,
+    );
+    _taskName = null;
+    print(
+        '[Compressing Video] done! ${DateTime.now().difference(_startDateTime).inSeconds}s');
+
+    _startDateTime = DateTime.now();
+
+    print('[Getting Thumbnail File] start');
+    final thumbnailFile = await _flutterVideoCompress.getFileThumbnail(videoFile.path, quality: 50);
+    print(
+        '[Getting Thumbnail File] done! ${DateTime.now().difference(_startDateTime).inSeconds}s');
+
+    final videoInfo = await _flutterVideoCompress.getMediaInfo(videoFile.path);
+
+    setState(() {
+      _thumbnailFileImage = Image.file(thumbnailFile);
+      _originalVideoInfo = videoInfo;
+      _compressedVideoInfo = compressedVideoInfo;
+    });
+    _loadingStreamCtrl.sink.add(false);
+  }
+
+  Widget _buildMaterialWarp(Widget body) {
+    return MaterialApp(
+      title: widget.title,
+      home: Scaffold(
+          appBar: AppBar(
+            title: Text(widget.title),
+            actions: <Widget>[
+              IconButton(
+                onPressed: () async {
+                  await _flutterVideoCompress.deleteAllCache();
+                },
+                icon: Icon(Icons.delete_forever),
+              ),
+            ],
+          ),
+          body: body),
+    );
+  }
+
+  Widget _buildRoundedRectangleButton(String text, ImageSource source) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        child: Text(text, style: TextStyle(color: Colors.white)),
+        color: Colors.grey[800],
         onPressed: () async {
-          final file =
-              await ImagePicker().getVideo(source: ImageSource.gallery);
-          await VideoCompress.setLogLevel(0);
-          final info = await VideoCompress.compressVideo(
-            file.path,
-            quality: VideoQuality.MediumQuality,
-            deleteOrigin: false,
-            includeAudio: true,
-          );
-          if (info != null) {
-            setState(() {
-              _counter = info.path;
-            });
+          final videoFile = await ImagePicker().getVideo(source: source);
+          if (videoFile != null) {
+            runFlutterVideoCompressMethods(File(videoFile.path));
           }
         },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+      ),
+    );
+  }
+
+  String _infoConvert(MediaInfo info) {
+    return 'path: ${info.path}\n'
+        'duration: ${info.duration} microseconds\n'
+        'size: ${info.filesize} bytes\n'
+        'size: ${info.width} x ${info.height}\n'
+        'orientation: ${info.orientation}°\n'
+        'compression cancelled: ${info.isCancel}\n'
+        'author: ${info.author}';
+  }
+
+  List<Widget> _buildInfoPanel(String title,
+      {MediaInfo info, Image image, bool isVideoModel = false}) {
+    if (info?.file == null && image == null && !isVideoModel) return [];
+    return [
+      if (!isVideoModel || info?.file != null)
+        Card(
+          child: ListTile(
+            title: Text(title),
+            dense: true,
+          ),
+        ),
+      if (info?.file != null)
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(_infoConvert(info)),
+        ),
+      if (image != null) image,
+      if (isVideoModel && info?.file != null) VideoPlayerView(file: info.file)
+    ];
+  }
+
+  @override
+  Widget build(context) {
+    return _buildMaterialWarp(
+      Stack(children: <Widget>[
+        ListView(
+          children: <Widget>[
+            const SizedBox(height: 20),
+            _buildRoundedRectangleButton(
+              'Take video from camera with Image Picker',
+              ImageSource.camera,
+            ),
+            _buildRoundedRectangleButton(
+              'Take video from gallery with Image Picker',
+              ImageSource.gallery,
+            ),
+            ..._buildInfoPanel(
+              'Original video information',
+              info: _originalVideoInfo,
+            ),
+            ..._buildInfoPanel(
+              'Original video view',
+              info: _originalVideoInfo,
+              isVideoModel: true,
+            ),
+            ..._buildInfoPanel(
+              'Compressed video information',
+              info: _compressedVideoInfo,
+            ),
+            ..._buildInfoPanel(
+              'Compressed video view',
+              info: _compressedVideoInfo,
+              isVideoModel: true,
+            ),
+            ..._buildInfoPanel(
+              'Thumbnail image from file preview',
+              image: _thumbnailFileImage,
+            ),
+          ].expand((widget) {
+            if (widget is SizedBox || widget is Card) {
+              return [widget];
+            }
+            return [widget, const SizedBox(height: 8)];
+          }).toList(),
+        ),
+        StreamBuilder<bool>(
+          stream: _loadingStreamCtrl.stream,
+          builder: (context, AsyncSnapshot<bool> snapshot) {
+            if (snapshot.data == true) {
+              return GestureDetector(
+                onTap: () {
+                  _flutterVideoCompress.cancelCompression();
+                },
+                child: Card(
+                  child: Container(
+                    color: Colors.black54,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        CircularProgressIndicator(),
+                        if (_taskName != null)
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text('[$_taskName] $_progressState％'),
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: const Text('click cancel...'),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+            return Container();
+          },
+        ),
+      ]),
+    );
+  }
+}
+
+class VideoPlayerView extends StatefulWidget {
+  VideoPlayerView({this.file});
+
+  final File file;
+
+  @override
+  _VideoPlayerViewState createState() => _VideoPlayerViewState();
+}
+
+class _VideoPlayerViewState extends State<VideoPlayerView> {
+  VideoPlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.file(widget.file)
+      ..initialize().then((_) {
+        setState(() {});
+      })
+      ..setVolume(1)
+      ..play();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
+  Widget build(context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _controller.value.isPlaying
+              ? _controller.pause()
+              : _controller.play();
+        });
+      },
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                _controller.value.initialized
+                    ? AspectRatio(
+                        aspectRatio: _controller.value.aspectRatio,
+                        child: VideoPlayer(_controller),
+                      )
+                    : Container(),
+                Icon(
+                  _controller.value.isPlaying ? null : Icons.play_arrow,
+                  size: 80,
+                ),
+              ],
+            ),
+            VideoProgressIndicator(
+              _controller,
+              allowScrubbing: true,
+              colors: VideoProgressColors(
+                playedColor: Color.fromRGBO(255, 255, 255, 0.1),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
