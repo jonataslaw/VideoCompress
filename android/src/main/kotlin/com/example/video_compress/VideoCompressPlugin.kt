@@ -5,6 +5,8 @@ import android.net.Uri
 import android.util.Log
 import com.otaliastudios.transcoder.Transcoder
 import com.otaliastudios.transcoder.TranscoderListener
+import com.otaliastudios.transcoder.source.TrimDataSource
+import com.otaliastudios.transcoder.source.UriDataSource
 import com.otaliastudios.transcoder.strategy.DefaultAudioStrategy
 import com.otaliastudios.transcoder.strategy.DefaultVideoStrategy
 import com.otaliastudios.transcoder.strategy.RemoveTrackStrategy
@@ -125,9 +127,16 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                     RemoveTrackStrategy()
                 }
 
+                val dataSource = if (startTime != null || duration != null){
+                    val source = UriDataSource(context, Uri.parse(path))
+                    TrimDataSource(source, (1000 * 1000 * (startTime ?: 0)).toLong(), (1000 * 1000 * (duration ?: 0)).toLong())
+                }else{
+                    UriDataSource(context, Uri.parse(path))
+                }
+
 
                 transcodeFuture = Transcoder.into(destPath!!)
-                        .addDataSource(context, Uri.parse(path))
+                        .addDataSource(dataSource)
                         .setAudioTrackStrategy(audioTrackStrategy)
                         .setVideoTrackStrategy(videoTrackStrategy)
                         .setListener(object : TranscoderListener {
