@@ -5,6 +5,8 @@ import android.net.Uri
 import android.util.Log
 import com.otaliastudios.transcoder.Transcoder
 import com.otaliastudios.transcoder.TranscoderListener
+import com.otaliastudios.transcoder.source.TrimDataSource
+import com.otaliastudios.transcoder.source.UriDataSource
 import com.otaliastudios.transcoder.strategy.DefaultAudioStrategy
 import com.otaliastudios.transcoder.strategy.DefaultVideoStrategy
 import com.otaliastudios.transcoder.strategy.RemoveTrackStrategy
