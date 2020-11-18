@@ -1,3 +1,7 @@
+## 2.1.1
+- Fix Subscription import 
+- Fix Error on android 10 with no includeAudio option
+
 ## 2.1.0
 - Added cancel compression to android 
 - Fix compress progress

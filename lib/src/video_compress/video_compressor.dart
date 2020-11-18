@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import '../progress_callback.dart/compress_mixin.dart';
+import '../progress_callback/compress_mixin.dart';
 import '../video_compress/video_quality.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
