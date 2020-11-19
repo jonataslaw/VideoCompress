@@ -201,6 +201,7 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
 
                 transcodeFuture = GIFCompressor.into(destPath)
                         .addDataSource(context, Uri.parse(path))
+                        .setStrategy(trackStrategy)
                         .setListener(object : GIFListener {
                             override fun onGIFCompressionFailed(exception: Throwable) {
                                 result.success(null)
