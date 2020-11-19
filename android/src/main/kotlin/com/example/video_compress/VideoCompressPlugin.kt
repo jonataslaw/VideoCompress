@@ -12,6 +12,10 @@ import com.otaliastudios.transcoder.strategy.DefaultVideoStrategy
 import com.otaliastudios.transcoder.strategy.RemoveTrackStrategy
 import com.otaliastudios.transcoder.strategy.TrackStrategy
 import com.otaliastudios.transcoder.strategy.size.*
+import com.otaliastudios.gif.GIFCompressor
+import com.otaliastudios.gif.GIFListener
+import com.otaliastudios.gif.strategy.DefaultStrategy
+import com.otaliastudios.gif.strategy.Strategy
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.BinaryMessenger
 import com.otaliastudios.transcoder.internal.Logger
@@ -161,6 +165,66 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                                 result.success(null)
                             }
                         }).transcode()
+            }
+            "compressGifToVideo" -> {
+                //https://natario1.github.io/GIFCompressor/home for more options
+                val path = call.argument<String>("path")!!
+                val quality = call.argument<Int>("quality")!!
+                val deleteOrigin = call.argument<Boolean>("deleteOrigin")!!
+                val frameRate = if (call.argument<Int>("frameRate")==null) 30 else call.argument<Int>("frameRate")
+                val tempDir: String = context.getExternalFilesDir("video_compress")!!.absolutePath
+                val out = SimpleDateFormat("yyyy-MM-dd hh-mm-ss").format(Date())
+                val destPath: String = tempDir + File.separator + "VID_" + out + ".mp4"
+
+                var trackStrategy: Strategy = DefaultStrategy.atMost(340).build();
+
+                when (quality) {
+
+                    0 -> {
+                        trackStrategy = DefaultStrategy.atMost(720).build()
+                    }
+
+                    1 -> {
+                        trackStrategy = DefaultStrategy.atMost(360).build()
+                    }
+                    2 -> {
+                        trackStrategy = DefaultStrategy.atMost(640).build()
+                    }
+                    3 -> {
+                        trackStrategy = DefaultStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .bitRate(1280 * 720 * 4.toLong())
+                                .frameRate(frameRate!!)
+                                .build()
+                    }
+                }
+
+                transcodeFuture = GIFCompressor.into(destPath)
+                        .addDataSource(context, Uri.parse(path))
+                        .setListener(object : GIFListener {
+                            override fun onGIFCompressionFailed(exception: Throwable) {
+                                result.success(null)
+                            }
+
+                            override fun onGIFCompressionProgress(progress: Double) {
+                                channel.invokeMethod("updateProgress", progress * 100.00)
+                            }
+
+                            override fun onGIFCompressionCompleted() {
+                                channel.invokeMethod("updateProgress", 100.00)
+                                val json = Utility(channelName).getMediaInfoJson(context, destPath)
+                                json.put("isCancel", false)
+                                result.success(json.toString())
+                                if (deleteOrigin) {
+                                    File(path).delete()
+                                }
+                            }
+
+                            override fun onGIFCompressionCanceled() {
+                                result.success(null)
+                            }
+
+                        }).compress()
             }
             else -> {
                 result.notImplemented()
