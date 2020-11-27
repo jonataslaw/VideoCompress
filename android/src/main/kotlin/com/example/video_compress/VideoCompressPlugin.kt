@@ -80,8 +80,8 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                 val path = call.argument<String>("path")!!
                 val quality = call.argument<Int>("quality")!!
                 val deleteOrigin = call.argument<Boolean>("deleteOrigin")!!
-                val startTime = call.argument<Int>("startTime")
-                val duration = call.argument<Int>("duration")
+                val startTime = call.argument<Number>("startTime")
+                val duration = call.argument<Number>("duration")
                 val includeAudio = call.argument<Boolean>("includeAudio") ?: true
                 val frameRate = if (call.argument<Int>("frameRate")==null) 30 else call.argument<Int>("frameRate")
 
@@ -129,7 +129,7 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
 
                 val dataSource = if (startTime != null || duration != null){
                     val source = UriDataSource(context, Uri.parse(path))
-                    TrimDataSource(source, (1000 * 1000 * (startTime ?: 0)).toLong(), (1000 * 1000 * (duration ?: 0)).toLong())
+                    TrimDataSource(source, (1000 * 1000 * (startTime ?: 0).toDouble()).toLong(), (1000 * 1000 * (duration ?: 0).toDouble()).toLong())
                 }else{
                     UriDataSource(context, Uri.parse(path))
                 }

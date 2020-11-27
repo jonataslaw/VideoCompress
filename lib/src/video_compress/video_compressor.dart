@@ -53,7 +53,7 @@ extension Compress on IVideoCompress {
   Future<Uint8List> getByteThumbnail(
     String path, {
     int quality = 100,
-    int position = -1,
+    num position = 0,
   }) async {
     assert(path != null);
     assert(quality > 1 || quality < 100);
@@ -71,7 +71,7 @@ extension Compress on IVideoCompress {
   Future<File> getFileThumbnail(
     String path, {
     int quality = 100,
-    int position = -1,
+    num position = 0,
   }) async {
     assert(path != null);
     assert(quality > 1 || quality < 100);
@@ -122,8 +122,8 @@ extension Compress on IVideoCompress {
     String path, {
     VideoQuality quality = VideoQuality.DefaultQuality,
     bool deleteOrigin = false,
-    int startTime,
-    int duration,
+    num startTime,
+    num duration,
     bool includeAudio,
     int frameRate = 30,
   }) async {
