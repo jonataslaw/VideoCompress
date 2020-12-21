@@ -55,7 +55,7 @@
     NSString *author = [AvController getMetaDataByTag:metadataAsset key:@"author"];
 
     double duration = asset.duration.value * 1000;
-    double fileSize = track.totalSampleDataLength;
+    double filesize = track.totalSampleDataLength;
 
     CGSize size = CGSizeApplyAffineTransform(track.naturalSize, track.preferredTransform);
 
@@ -69,7 +69,7 @@
         @"width": [NSNumber numberWithDouble:width],
         @"height": [NSNumber numberWithDouble:height],
         @"duration": [NSNumber numberWithDouble:duration],
-        @"fileSize": [NSNumber numberWithDouble:fileSize],
+        @"filesize": [NSNumber numberWithDouble:filesize],
         @"orientation": [NSNumber numberWithInteger:0],
     };
     return dictionary;
