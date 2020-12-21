@@ -53,7 +53,7 @@
     AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:url];
     AVAsset *metadataAsset = playerItem.asset;
 
-    NSInteger *orientation = [AvController getVideoOrientation:path];
+    NSInteger orientation = [AvController getVideoOrientation:path];
 
     NSString *title = [AvController getMetaDataByTag:metadataAsset key:@"title"];
     NSString *author = [AvController getMetaDataByTag:metadataAsset key:@"author"];
@@ -74,7 +74,7 @@
         @"height": [NSNumber numberWithDouble:height],
         @"duration": [NSNumber numberWithDouble:duration],
         @"filesize": [NSNumber numberWithDouble:filesize],
-        @"orientation": [NSNumber numberWithInteger:0],
+        @"orientation": [NSNumber numberWithInteger:orientation],
     };
     return dictionary;
 }

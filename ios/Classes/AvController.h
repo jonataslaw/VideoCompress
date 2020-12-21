@@ -6,7 +6,7 @@
 
 + (AVAssetTrack *)getTrack:(AVURLAsset *)asset;
 
-+ (NSInteger *)getVideoOrientation:(NSString *)path;
++ (NSInteger)getVideoOrientation:(NSString *)path;
 
 + (NSString *)getMetaDataByTag:(AVAsset *)asset key:(NSString *)key;
 

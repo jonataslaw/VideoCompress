@@ -1,4 +1,5 @@
 #import "AvController.h"
+#import "Utility.h"
 #import <AVFoundation/AVFoundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
@@ -25,9 +26,26 @@
 }
 
 
-+ (NSInteger *)getVideoOrientation:(NSString *)path {
-    NSInteger *temp = 0;
-    return temp;
++ (NSInteger)getVideoOrientation:(NSString *)path {
+    NSURL *url = [Utility getPathUrl:path];
+    AVURLAsset *asset = [self getVideoAsset:url];
+    AVAssetTrack *track = nil;
+    if([self getTrack:asset]) {
+        track = [self getTrack:asset];
+    }
+    CGSize size = track.naturalSize;
+    CGAffineTransform txf = track.preferredTransform;
+    NSInteger orientation = 0;
+    if(size.width == txf.tx && size.height == txf.ty) {
+        orientation = 0;
+    } else if(txf.tx == 0 && txf.ty == 0) {
+        orientation = 90;
+    } else if(txf.tx == 0 && txf.ty == size.width) {
+        orientation = 180;
+    } else {
+        orientation = 270;
+    }
+    return orientation;
 }
 
 + (NSString *)getMetaDataByTag:(AVAsset *)asset key:(NSString *)key {
