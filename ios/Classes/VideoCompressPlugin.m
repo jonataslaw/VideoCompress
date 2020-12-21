@@ -8,6 +8,7 @@
 - (void)compressVideo:(NSString *)path quality:(NSNumber *)quality result:(FlutterResult)result;
 - (void)cancelCompression:(FlutterResult)result;
 - (NSDictionary *)getMediaInfoJson:(NSString *)path;
+- (void)getMediaInfo:(NSString *)path result:(FlutterResult)result;
 - (NSString *)getExportPreset:(NSNumber *)quality;
 
 @end
@@ -36,6 +37,9 @@
     } else if ([@"deleteAllCache" isEqualToString:call.method]) {
         [Utility deleteFile:[Utility basePath]];
         result(@YES);
+    } else if([@"getMediaInfo" isEqualToString:call.method]) {
+        NSString *path = args[@"path"];
+        [self getMediaInfo:path result:result];
     } else {
         result(FlutterMethodNotImplemented);
     }
