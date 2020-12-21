@@ -58,7 +58,7 @@
     NSString *title = [AvController getMetaDataByTag:metadataAsset key:@"title"];
     NSString *author = [AvController getMetaDataByTag:metadataAsset key:@"author"];
 
-    double duration = asset.duration.value * 1000;
+    double duration = asset.duration.value;
     double filesize = track.totalSampleDataLength;
 
     CGSize size = CGSizeApplyAffineTransform(track.naturalSize, track.preferredTransform);
