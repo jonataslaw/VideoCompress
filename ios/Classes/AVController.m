@@ -49,7 +49,8 @@
 
 + (NSString *)getMetaDataByTag:(AVAsset *)asset key:(NSString *)key {
     for (AVMetadataItem *item in asset.commonMetadata) {
-        if (item.commonKey.accessibilityValue == key) {
+        if (([item.commonKey isEqual:AVMetadataCommonKeyAuthor] && [key isEqual: @"author"]) ||
+            ([item.commonKey isEqual:AVMetadataCommonKeyTitle] && [key isEqual: @"title"])) {
             return item.stringValue != NULL ? item.stringValue : @"";
         }
     }
