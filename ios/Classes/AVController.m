@@ -10,7 +10,7 @@
 }
 
 + (AVAssetTrack *)getTrack:(AVURLAsset *)asset {
-    __block AVAssetTrack* track = nil;
+    __block AVAssetTrack *track = nil;
     dispatch_group_t group = dispatch_group_create();
     dispatch_group_enter(group);
     NSArray *array = [NSArray arrayWithObject:@"tracks"];
@@ -48,16 +48,13 @@
 }
 
 + (NSString *)getMetaDataByTag:(AVAsset *)asset key:(NSString *)key {
-    for (AVMetadataItem* item in asset.commonMetadata) {
+    for (AVMetadataItem *item in asset.commonMetadata) {
         if (item.commonKey.accessibilityValue == key) {
-            if (item.stringValue == (id)[NSNull null] || item.stringValue.length == 0 ) {
-                return item.stringValue;
-            } else {
-                return @"";
-            }
+            return item.stringValue != NULL ? item.stringValue : @"";
         }
     }
     return @"";
 }
+
 @end
 
