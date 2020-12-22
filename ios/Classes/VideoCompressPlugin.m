@@ -1,5 +1,5 @@
 #import "VideoCompressPlugin.h"
-#import "AvController.h"
+#import "AVController.h"
 #import "Utility.h"
 #import <AVFoundation/AVFoundation.h>
 
@@ -37,7 +37,7 @@
     } else if ([@"deleteAllCache" isEqualToString:call.method]) {
         [Utility deleteFile:[Utility basePath]];
         result(@YES);
-    } else if([@"getMediaInfo" isEqualToString:call.method]) {
+    } else if ([@"getMediaInfo" isEqualToString:call.method]) {
         NSString *path = args[@"path"];
         [self getMediaInfo:path result:result];
     } else {
@@ -47,16 +47,16 @@
 
 - (NSDictionary *)getMediaInfoJson:(NSString *)path {
     NSURL *url = [Utility getPathUrl:path];
-    AVURLAsset *asset = [AvController getVideoAsset:url];
-    AVAssetTrack *track = [AvController getTrack:asset];
+    AVURLAsset *asset = [AVController getVideoAsset:url];
+    AVAssetTrack *track = [AVController getTrack:asset];
 
     AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:url];
     AVAsset *metadataAsset = playerItem.asset;
 
-    NSInteger orientation = [AvController getVideoOrientation:path];
+    NSInteger orientation = [AVController getVideoOrientation:path];
 
-    NSString *title = [AvController getMetaDataByTag:metadataAsset key:@"title"];
-    NSString *author = [AvController getMetaDataByTag:metadataAsset key:@"author"];
+    NSString *title = [AVController getMetaDataByTag:metadataAsset key:@"title"];
+    NSString *author = [AVController getMetaDataByTag:metadataAsset key:@"author"];
 
     double duration = asset.duration.value;
     double filesize = track.totalSampleDataLength;
@@ -66,7 +66,7 @@
     double width = fabs(size.width);
     double height = fabs(size.height);
 
-    NSDictionary* dictionary = @{
+    NSDictionary *dictionary = @{
         @"path": [Utility excludeFileProtocol:path],
         @"title": title,
         @"author": author,
@@ -80,8 +80,8 @@
 }
 
 - (void)getMediaInfo:(NSString *)path result:(FlutterResult)result {
-    NSDictionary *json = [self getMediaInfoJson: path];
-    NSString *string = [Utility keyValueToJson: json];
+    NSDictionary *json = [self getMediaInfoJson:path];
+    NSString *string = [Utility keyValueToJson:json];
     result(string);
 }
 
@@ -137,4 +137,3 @@
 }
 
 @end
-

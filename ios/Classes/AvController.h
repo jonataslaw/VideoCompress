@@ -1,6 +1,6 @@
 #import <AVFoundation/AVFoundation.h>
 
-@interface AvController : NSObject
+@interface AVController: NSObject
 
 + (AVURLAsset *)getVideoAsset:(NSURL *)url;
 
@@ -11,5 +11,3 @@
 + (NSString *)getMetaDataByTag:(AVAsset *)asset key:(NSString *)key;
 
 @end
-
-
