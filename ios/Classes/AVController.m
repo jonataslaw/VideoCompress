@@ -13,7 +13,7 @@
     __block AVAssetTrack *track = nil;
     dispatch_group_t group = dispatch_group_create();
     dispatch_group_enter(group);
-    NSArray *array = [NSArray arrayWithObject:@"tracks"];
+    NSArray *array = @[@"tracks"];
     [asset loadValuesAsynchronouslyForKeys:array completionHandler:^(void) {
         AVKeyValueStatus status = [asset statusOfValueForKey:@"tracks" error:nil];
         if (status == AVKeyValueStatusLoaded) {
@@ -49,8 +49,7 @@
 
 + (NSString *)getMetaDataByTag:(AVAsset *)asset key:(NSString *)key {
     for (AVMetadataItem *item in asset.commonMetadata) {
-        if (([item.commonKey isEqual:AVMetadataCommonKeyAuthor] && [key isEqual: @"author"]) ||
-            ([item.commonKey isEqual:AVMetadataCommonKeyTitle] && [key isEqual: @"title"])) {
+        if ([item.commonKey isEqualToString:key]) {
             return item.stringValue != NULL ? item.stringValue : @"";
         }
     }
