@@ -11,7 +11,7 @@ class ObservableBuilder<T> {
   }
 
   Subscription subscribe(void onData(T event),
-      {Function onError, void onDone(), bool cancelOnError}) {
+      {Function? onError, void onDone()?, bool? cancelOnError}) {
     notSubscribed = false;
     _observable.stream.listen(onData,
         onError: onError, onDone: onDone, cancelOnError: cancelOnError);
