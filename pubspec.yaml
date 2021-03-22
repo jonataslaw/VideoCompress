@@ -4,8 +4,8 @@ version: 2.1.1
 homepage: https://github.com/jonataslaw/VideoCompress
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
-  flutter: ">=1.12.0 <2.0.0"
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.20.0"
 
 dependencies:
   flutter:
@@ -25,6 +25,8 @@ flutter:
         package: com.example.video_compress
         pluginClass: VideoCompressPlugin
       ios:
+        pluginClass: VideoCompressPlugin
+      macos:
         pluginClass: VideoCompressPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
