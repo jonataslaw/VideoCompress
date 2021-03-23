@@ -205,7 +205,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
             exporter.videoComposition = videoComposition
         }
         
-        if !isIncludeAudio {
+        if isIncludeAudio {
             exporter.timeRange = timeRange
         }
         
@@ -214,9 +214,11 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateProgress),
                                          userInfo: exporter, repeats: true)
         
+        stopCommand = false
         exporter.exportAsynchronously(completionHandler: {
+            timer.invalidate()
+            self.exporter = nil
             if(self.stopCommand) {
-                timer.invalidate()
                 self.stopCommand = false
                 var json = self.getMediaInfoJson(path)
                 json["isCancel"] = true
@@ -224,18 +226,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
                 return result(jsonString)
             }
             if deleteOrigin {
-                timer.invalidate()
-                let fileManager = FileManager.default
-                do {
-                    if fileManager.fileExists(atPath: path) {
-                        try fileManager.removeItem(atPath: path)
-                    }
-                    self.exporter = nil
-                    self.stopCommand = false
-                }
-                catch let error as NSError {
-                    print(error)
-                }
+                Utility.deleteFile(path)
             }
             var json = self.getMediaInfoJson(compressionUrl.absoluteString)
             json["isCancel"] = false
@@ -245,8 +236,8 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
     }
     
     private func cancelCompression(_ result: FlutterResult) {
-        exporter?.cancelExport()
         stopCommand = true
+        exporter?.cancelExport()
         result("")
     }
     
