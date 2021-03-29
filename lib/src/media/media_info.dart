@@ -1,25 +1,24 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
 
 class MediaInfo {
-  String path;
-  String title;
-  String author;
-  int width;
-  int height;
+  String? path;
+  String? title;
+  String? author;
+  int? width;
+  int? height;
 
   /// [Android] API level 17
-  int orientation;
+  int? orientation;
 
   /// bytes
-  int filesize; // filesize
+  int? filesize; // filesize
   /// microsecond
-  double duration;
-  bool isCancel;
-  File file;
+  double? duration;
+  bool? isCancel;
+  File? file;
 
   MediaInfo({
-    @required this.path,
+    required this.path,
     this.title,
     this.author,
     this.width,
@@ -41,7 +40,7 @@ class MediaInfo {
     filesize = json['filesize'];
     duration = double.tryParse('${json['duration']}');
     isCancel = json['isCancel'];
-    file = File(path);
+    file = File(path!);
   }
 
   Map<String, dynamic> toJson() {
@@ -59,7 +58,7 @@ class MediaInfo {
     if (this.isCancel != null) {
       data['isCancel'] = this.isCancel;
     }
-    data['file'] = File(path).toString();
+    data['file'] = File(path!).toString();
     return data;
   }
 }
