@@ -1,10 +1,9 @@
-import 'package:flutter/services.dart';
-import 'package:flutter_test/flutter_test.dart';
+// import 'package:flutter/services.dart';
 
 void main() {
-  const MethodChannel channel = MethodChannel('video_compress');
+  // const MethodChannel channel = MethodChannel('video_compress');
 
-  tearDown(() {
-    channel.setMockMethodCallHandler(null);
-  });
+  // tearDown(() {
+  //   channel.setMockMethodCallHandler(null);
+  // });
 }

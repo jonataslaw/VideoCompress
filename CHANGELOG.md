@@ -1,3 +1,7 @@
+## 3.0.0
+- Added MacOS support (thank's @efraespada)
+- Null-safety support (thank's @rlazom feat @leynier)
+
 ## 2.1.1
 - Fix Subscription import 
 - Fix Error on android 10 with no includeAudio option
