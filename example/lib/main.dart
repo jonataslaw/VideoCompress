@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
           await VideoCompress.setLogLevel(0);
           final infoFuture = VideoCompress.compressVideo(
             file.path,
-            quality: VideoQuality.MediumQuality,
+            quality: VideoQuality.LowQuality,
             deleteOrigin: false,
             includeAudio: true,
           );
@@ -182,6 +182,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          Text('video length ${(widget.info.duration/1000).toInt()} Seconds'),
                           Text('Converted size: ${(widget.info.filesize/1000000).toString()}', style: TextStyle(fontWeight: FontWeight.bold),),
                           Text('original size: ${(widget.originalSize/1000000).toString()}', style: TextStyle(fontWeight: FontWeight.bold),),
                           Text('Conversion duration: ${(widget.duration.duration.inSeconds).toString()}', style: TextStyle(fontWeight: FontWeight.bold),),
