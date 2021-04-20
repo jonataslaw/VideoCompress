@@ -122,6 +122,7 @@ extension Compress on IVideoCompress {
     int? startTime,
     int? duration,
     bool? includeAudio,
+    required String into,
     int frameRate = 30,
   }) async {
     if (isCompressing) {
@@ -144,6 +145,7 @@ extension Compress on IVideoCompress {
       'duration': duration,
       'includeAudio': includeAudio,
       'frameRate': frameRate,
+      'into': into
     });
 
     // ignore: invalid_use_of_protected_member

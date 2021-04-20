@@ -174,9 +174,9 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         
         let sourceVideoAsset = avController.getVideoAsset(sourceVideoUrl)
         let sourceVideoTrack = avController.getTrack(sourceVideoAsset)
-        
+        let fileName = ProcessInfo.processInfo.globallyUniqueString
         let compressionUrl =
-            Utility.getPathUrl("\(Utility.basePath())/\(Utility.getFileName(path)).\(sourceVideoType)")
+            Utility.getPathUrl("\(Utility.basePath())/\(fileName).\(sourceVideoType)")
         
         let timescale = sourceVideoAsset.duration.timescale
         let minStartTime = Double(startTime ?? 0)
@@ -213,15 +213,19 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         
         let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateProgress),
                                          userInfo: exporter, repeats: true)
-        
+      NSLog("Exporting starting")
         exporter.exportAsynchronously(completionHandler: {
-            if(self.stopCommand) {
-                timer.invalidate()
-                self.stopCommand = false
-                var json = self.getMediaInfoJson(path)
-                json["isCancel"] = true
-                let jsonString = Utility.keyValueToJson(json)
-                return result(jsonString)
+            
+             switch exporter.status {
+            case .failed:
+                let description = "\(String(describing: exporter.error))"
+                 NSLog (description);
+            case .cancelled:
+                NSLog("Export canceled")
+            case .completed:
+                NSLog("Successful!")
+            default:
+                NSLog("default case")
             }
             if deleteOrigin {
                 timer.invalidate()
@@ -241,7 +245,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
             json["isCancel"] = false
             let jsonString = Utility.keyValueToJson(json)
             result(jsonString)
-        })
+        }) 
     }
     
     private func cancelCompression(_ result: FlutterResult) {
