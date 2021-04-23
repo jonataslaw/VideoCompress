@@ -78,9 +78,9 @@ extension Compress on IVideoCompress {
       'path': path,
       'quality': quality,
       'position': position,
-    }) as FutureOr<String>);
+    }));
 
-    final file = File(filePath);
+    final file = File(filePath!);
 
     return file;
   }
@@ -95,7 +95,8 @@ extension Compress on IVideoCompress {
   /// debugPrint(info.toJson());
   /// ```
   Future<MediaInfo> getMediaInfo(String path) async {
-    final jsonStr = await (_invoke<String>('getMediaInfo', {'path': path}) as FutureOr<String>);
+    final jsonStr = await (_invoke<String>('getMediaInfo', {'path': path})
+        as FutureOr<String>);
     final jsonMap = json.decode(jsonStr);
     return MediaInfo.fromJson(jsonMap);
   }
