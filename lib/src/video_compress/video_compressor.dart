@@ -95,9 +95,8 @@ extension Compress on IVideoCompress {
   /// debugPrint(info.toJson());
   /// ```
   Future<MediaInfo> getMediaInfo(String path) async {
-    final jsonStr = await (_invoke<String>('getMediaInfo', {'path': path})
-        as FutureOr<String>);
-    final jsonMap = json.decode(jsonStr);
+    final jsonStr = await (_invoke<String>('getMediaInfo', {'path': path}));
+    final jsonMap = json.decode(jsonStr!);
     return MediaInfo.fromJson(jsonMap);
   }
 
