@@ -16,6 +16,7 @@ class _VideoCompressImpl extends IVideoCompress {
   }
 
   static _VideoCompressImpl? _instance;
+
   static _VideoCompressImpl get instance {
     return _instance ??= _VideoCompressImpl._();
   }
@@ -36,9 +37,7 @@ extension Compress on IVideoCompress {
   Future<T?> _invoke<T>(String name, [Map<String, dynamic>? params]) async {
     T? result;
     try {
-      result = params != null
-          ? await channel.invokeMethod(name, params)
-          : await channel.invokeMethod(name);
+      result = params != null ? await channel.invokeMethod(name, params) : await channel.invokeMethod(name);
     } on PlatformException catch (e) {
       debugPrint('''Error from VideoCompress: 
       Method: $name
@@ -74,13 +73,15 @@ extension Compress on IVideoCompress {
   }) async {
     assert(quality > 1 || quality < 100);
 
+    // Not to set the result as strong-mode so that it would have exception to
+    // lead to the failure of compression
     final filePath = await (_invoke<String>('getFileThumbnail', {
       'path': path,
       'quality': quality,
       'position': position,
-    }) as FutureOr<String>);
+    }));
 
-    final file = File(filePath);
+    final file = File(filePath!);
 
     return file;
   }
