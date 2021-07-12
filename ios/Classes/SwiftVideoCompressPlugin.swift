@@ -7,6 +7,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
     private var stopCommand = false
     private let channel: FlutterMethodChannel
     private let avController = AvController()
+    private var timer : Timer? = nil;
     
     init(channel: FlutterMethodChannel) {
         self.channel = channel
@@ -135,7 +136,10 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
     
     @objc private func updateProgress(timer:Timer) {
         let asset = timer.userInfo as! AVAssetExportSession
+        print("===status====")
         if(!stopCommand) {
+            print("status:",asset.status.rawValue)
+            print("asset.progress=",asset.progress * 100);
             channel.invokeMethod("updateProgress", arguments: "\(String(describing: asset.progress * 100))")
         }
     }
@@ -143,7 +147,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
     private func getExportPreset(_ quality: NSNumber)->String {
         switch(quality) {
         case 1:
-            return AVAssetExportPresetLowQuality    
+            return AVAssetExportPresetLowQuality
         case 2:
             return AVAssetExportPresetMediumQuality
         case 3:
@@ -163,12 +167,13 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
             return sourceVideoTrack.asset!
         }
         
-        return composition    
+        return composition
     }
     
     private func compressVideo(_ path: String,_ quality: NSNumber,_ deleteOrigin: Bool,_ startTime: Double?,
                                _ duration: Double?,_ includeAudio: Bool?,_ frameRate: Int?,
                                _ result: @escaping FlutterResult) {
+        self.stopCommand = false
         let sourceVideoUrl = Utility.getPathUrl(path)
         let sourceVideoType = "mp4"
         
@@ -211,12 +216,13 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         
         Utility.deleteFile(compressionUrl.absoluteString)
         
-        let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateProgress),
-                                         userInfo: exporter, repeats: true)
+        invalidateTimer()
+        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateProgress),
+                                                  userInfo: exporter, repeats: true)
         
         exporter.exportAsynchronously(completionHandler: {
             if(self.stopCommand) {
-                timer.invalidate()
+                self.invalidateTimer()
                 self.stopCommand = false
                 var json = self.getMediaInfoJson(path)
                 json["isCancel"] = true
@@ -224,7 +230,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
                 return result(jsonString)
             }
             if deleteOrigin {
-                timer.invalidate()
+                self.invalidateTimer()
                 let fileManager = FileManager.default
                 do {
                     if fileManager.fileExists(atPath: path) {
@@ -237,6 +243,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
                     print(error)
                 }
             }
+            
             var json = self.getMediaInfoJson(compressionUrl.absoluteString)
             json["isCancel"] = false
             let jsonString = Utility.keyValueToJson(json)
@@ -247,7 +254,12 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
     private func cancelCompression(_ result: FlutterResult) {
         exporter?.cancelExport()
         stopCommand = true
+        invalidateTimer()
         result("")
     }
     
+    private func invalidateTimer() {
+        timer?.invalidate()
+        timer = nil;
+    }
 }
