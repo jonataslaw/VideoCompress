@@ -223,8 +223,8 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
                                          userInfo: exporter, repeats: true)
         
         exporter.exportAsynchronously(completionHandler: {
+            timer.invalidate()
             if(self.stopCommand) {
-                timer.invalidate()
                 self.stopCommand = false
                 var json = self.getMediaInfoJson(path)
                 json["isCancel"] = true
@@ -232,7 +232,6 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
                 return result(jsonString)
             }
             if deleteOrigin {
-                timer.invalidate()
                 let fileManager = FileManager.default
                 do {
                     if fileManager.fileExists(atPath: path) {
