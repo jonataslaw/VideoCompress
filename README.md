@@ -1,39 +1,11 @@
 # video_compress
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-   <a href="https://github.com/jonataslaw/VideoCompress/graphs/contributors">  
-    <img src="https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square"  
-      alt="All Contributors" />  
-  </a> 
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-  <a href="https://flutter.io">  
-    <img src="https://img.shields.io/badge/Platform-Flutter-yellow.svg"  
-      alt="Platform" />  
-  </a> 
-   <a href="https://pub.dev/packages/video_compress">  
-    <img src="https://img.shields.io/pub/v/video_compress.svg"  
-      alt="Pub Package" /> 
-  </a>
-   <a href="https://opensource.org/licenses/MIT">  
-    <img src="https://img.shields.io/badge/License-MIT-red.svg"  
-      alt="License: MIT" />  
-  </a>
-  <a href="https://github.com/jonataslaw/videocompress/network">  
-    <img src="https://img.shields.io/github/forks/jonataslaw/videocompress"  
-      alt="Forks" />  
-  </a> 
-  <a href="https://github.com/jonataslaw/videocompress/stargazers">  
-    <img src="https://img.shields.io/github/stars/jonataslaw/videocompress"  
-      alt="Stars" />  
-  </a>
-  <br>
-  <br>
 
 Compress videos, remove audio, manipulate thumbnails, and make your video compatible with all platforms through this lightweight and efficient library.
 100% native code was used, we do not use FFMPEG as it is very slow, bloated and the GNU license is an obstacle for commercial applications.
 In addition, google chrome uses VP8/VP9, safari uses h264, and most of the time, it is necessary to encode the video in two formats, but not with this library.
 All video files are encoded in an MP4 container with AAC audio that allows 100% compatibility with safari, mozila, chrome, android and iOS.
 
-Works on ANDROID and IOS.
+Works on ANDROID, IOS and desktop (just MacOS for now).
 
 
 
@@ -57,7 +29,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  video_compress: ^2.1.0
+  video_compress: ^3.1.0
 ```
 
 ### 2. Install it
@@ -190,30 +162,3 @@ Contributions are always welcome!
 Inspired by the flutter_ffmpeg library.
 https://github.com/rurico/flutter_video_compress
 
-## Contributors ✨
-
-Thanks goes to these wonderful people:
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tr>
-    <td align="center"><a><img src="https://avatars1.githubusercontent.com/u/42075898?v=4" width="100px;" alt=""/><br /><sub><b>khainhero</b></sub></a><br /><a href="#maintenance-khainhero" title="Maintenance">🚧</a></td>
-    <td align="center"><a href="https://github.com/Serdnad"><img src="https://avatars1.githubusercontent.com/u/4723453?v=4" width="100px;" alt=""/><br /><sub><b>Andres Gutierrez</b></sub></a><br /><a href="#maintenance-Serdnad" title="Maintenance">🚧</a></td>
-    <td align="center"><a href="https://github.com/jonataslaw"><img src="https://avatars2.githubusercontent.com/u/35742643?v=4" width="100px;" alt=""/><br /><sub><b>Jonny Borges</b></sub></a><br /><a href="https://github.com/jonataslaw/VideoCompress/commits?author=jonataslaw" title="Code">💻</a></td>
-    <td align="center"><a><img src="https://avatars0.githubusercontent.com/u/13279066?v=4" width="100px;" alt=""/><br /><sub><b>Tibout Shaik</b></sub></a><br /><a href="#maintenance-Martibis" title="Maintenance">🚧</a></td>
-    <td align="center"><a><img src="https://avatars3.githubusercontent.com/u/2068045?v=4" width="100px;" alt=""/><br /><sub><b>Marco A. Braghim</b></sub></a><br /><a href="#maintenance-marcobraghim" title="Maintenance">🚧</a></td>
-    <td align="center"><a href="https://github.com/ppornkitpras-agoda"><img src="https://avatars3.githubusercontent.com/u/54128106?v=4" width="100px;" alt=""/><br /><sub><b>ppornkitpras-agoda</b></sub></a><br /><a href="#maintenance-ppornkitpras-agoda" title="Maintenance">🚧</a></td>
-    <td align="center"><a href="https://github.com/snowb1shop"><img src="https://avatars3.githubusercontent.com/u/18536122?v=4" width="100px;" alt=""/><br /><sub><b>Rafał Płonka</b></sub></a><br /><a href="#maintenance-snowb1shop" title="Maintenance">🚧</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/yanivshaked"><img src="https://avatars3.githubusercontent.com/u/13107481?v=4" width="100px;" alt=""/><br /><sub><b>Yaniv Shaked</b></sub></a><br /><a href="#maintenance-yanivshaked" title="Maintenance">🚧</a></td>
-  </tr>
-</table>
-
-<!-- markdownlint-enable -->
-<!-- prettier-ignore-end -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

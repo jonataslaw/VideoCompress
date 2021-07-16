@@ -1,3 +1,9 @@
+## 3.1.0
+- Bug fix on getMediaInfo (@trustmefelix)
+- Improve getFileThumbnail() (@FelixMoMo/@trustmefelix)
+- invalidate updateProgress timer after the completion of video export (@jinthislife)
+- Added Support for resolution presets (@yanivshaked)
+
 ## 3.0.0
 - Added MacOS support (thank's @efraespada)
 - Null-safety support (thank's @rlazom feat @leynier)
