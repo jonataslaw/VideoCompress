@@ -201,28 +201,28 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         
         let session = getComposition(isIncludeAudio, timeRange, sourceVideoTrack!)
         
-        let exporter = AVAssetExportSession(asset: session, presetName: getExportPreset(quality))!
+        exporter = AVAssetExportSession(asset: session, presetName: getExportPreset(quality))!
         
-        exporter.outputURL = compressionUrl
-        exporter.outputFileType = AVFileType.mp4
-        exporter.shouldOptimizeForNetworkUse = true
+        exporter!.outputURL = compressionUrl
+        exporter!.outputFileType = AVFileType.mp4
+        exporter!.shouldOptimizeForNetworkUse = true
         
         if frameRate != nil {
             let videoComposition = AVMutableVideoComposition(propertiesOf: sourceVideoAsset)
             videoComposition.frameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate!))
-            exporter.videoComposition = videoComposition
+            exporter!.videoComposition = videoComposition
         }
         
         if !isIncludeAudio {
-            exporter.timeRange = timeRange
+            exporter!.timeRange = timeRange
         }
         
         Utility.deleteFile(compressionUrl.absoluteString)
         
         let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateProgress),
-                                         userInfo: exporter, repeats: true)
+                                         userInfo: exporter!, repeats: true)
         
-        exporter.exportAsynchronously(completionHandler: {
+        exporter!.exportAsynchronously(completionHandler: {
             timer.invalidate()
             if(self.stopCommand) {
                 self.stopCommand = false
@@ -252,8 +252,8 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
     }
     
     private func cancelCompression(_ result: FlutterResult) {
-        exporter?.cancelExport()
-        stopCommand = true
+        self.exporter?.cancelExport()
+        self.stopCommand = true
         result("")
     }
     
