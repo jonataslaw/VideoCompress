@@ -190,7 +190,7 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
         _channel = null
     }
 
-    private fun init(context: Context, messenger: BinaryMessenger) {
+    fun init(context: Context, messenger: BinaryMessenger) {
         val channel = MethodChannel(messenger, channelName)
         channel.setMethodCallHandler(this)
         _context = context
