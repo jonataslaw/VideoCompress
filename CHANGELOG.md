@@ -1,3 +1,6 @@
+## 3.1.1
+- Fix issue on iOS with files containing whitespaces
+
 ## 3.1.0
 - Bug fix on getMediaInfo (@trustmefelix)
 - Improve getFileThumbnail() (@FelixMoMo/@trustmefelix)

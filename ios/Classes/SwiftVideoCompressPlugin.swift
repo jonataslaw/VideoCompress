@@ -244,7 +244,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
                     print(error)
                 }
             }
-            var json = self.getMediaInfoJson(compressionUrl.absoluteString)
+            var json = self.getMediaInfoJson(Utility.excludeEncoding(compressionUrl.path))
             json["isCancel"] = false
             let jsonString = Utility.keyValueToJson(json)
             result(jsonString)
