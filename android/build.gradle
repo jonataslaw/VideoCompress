@@ -40,6 +40,6 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'com.otaliastudios:transcoder:0.10.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version
+    implementation 'com.otaliastudios:transcoder:0.10.4'
 }

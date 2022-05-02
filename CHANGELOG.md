@@ -1,5 +1,6 @@
 ## 3.1.1
 - Fix issue on iOS with files containing whitespaces
+- Update Android compression library
 - Fix build issues for Android due to old Kotlin plugin
 - Update Android dependencies
 
