@@ -12,7 +12,7 @@ class MediaInfo {
 
   /// bytes
   int? filesize; // filesize
-  /// microsecond
+  /// milliseconds
   double? duration;
   bool? isCancel;
   File? file;
