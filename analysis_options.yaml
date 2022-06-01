@@ -1,6 +1,0 @@
-include: package:pedantic/analysis_options.yaml  
-
-analyzer: 
- errors:  
-   todo: ignore 
-   invalid_use_of_protected_member : ignore
