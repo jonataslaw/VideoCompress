@@ -23,7 +23,7 @@ class _VideoThumbnailState extends State<VideoThumbnail> {
         file = await openFile(acceptedTypeGroups: [typeGroup]);
       } else {
         final picker = ImagePicker();
-        var pickedFile = await picker.getVideo(source: ImageSource.gallery);
+        var pickedFile = await picker.pickVideo(source: ImageSource.gallery);
         file = File(pickedFile!.path);
       }
 
