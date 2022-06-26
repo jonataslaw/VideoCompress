@@ -1,8 +1,14 @@
+## 3.1.2
+- Fix build issues for Android due to old Kotlin plugin and update Android dependencies (@vbuberen)
+
+
 ## 3.1.1
-- Fix issue on iOS with files containing whitespaces
-- Update Android compression library
-- Fix build issues for Android due to old Kotlin plugin
-- Update Android dependencies
+- Fix issue on iOS with files containing whitespaces (@kaiquegazola)
+- Fix cancel compress on IOS (@posawatji)
+- Update Android compression library (@crtl)
+- Update flutter 3 (@pranavo72bex)
+- Fix multiple compression on android (@neelansh-creatorstack )
+- Fix multiple compression on iOS (zhuyangyang-lingoace)
 
 ## 3.1.0
 - Bug fix on getMediaInfo (@trustmefelix)

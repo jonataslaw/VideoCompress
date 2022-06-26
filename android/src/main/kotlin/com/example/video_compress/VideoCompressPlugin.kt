@@ -87,7 +87,7 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
 
                 val tempDir: String = context.getExternalFilesDir("video_compress")!!.absolutePath
                 val out = SimpleDateFormat("yyyy-MM-dd hh-mm-ss").format(Date())
-                val destPath: String = tempDir + File.separator + "VID_" + out + ".mp4"
+                val destPath: String = tempDir + File.separator + "VID_" + out + path.hashCode() + ".mp4"
 
                 var videoTrackStrategy: TrackStrategy = DefaultVideoStrategy.atMost(340).build();
                 val audioTrackStrategy: TrackStrategy

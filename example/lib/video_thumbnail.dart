@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,15 +14,16 @@ class _VideoThumbnailState extends State<VideoThumbnail> {
 
   @override
   Widget build(BuildContext context) {
-    _getVideoThumbnail() async {
+    Future<Null> _getVideoThumbnail() async {
       var file;
 
       if (Platform.isMacOS) {
-        final typeGroup = XTypeGroup(label: 'videos', extensions: ['mov', 'mp4']);
+        final typeGroup =
+            XTypeGroup(label: 'videos', extensions: ['mov', 'mp4']);
         file = await openFile(acceptedTypeGroups: [typeGroup]);
       } else {
         final picker = ImagePicker();
-        PickedFile? pickedFile = await picker.getVideo(source: ImageSource.gallery);
+        var pickedFile = await picker.pickVideo(source: ImageSource.gallery);
         file = File(pickedFile!.path);
       }
 
@@ -32,6 +32,8 @@ class _VideoThumbnailState extends State<VideoThumbnail> {
         setState(() {
           print(_thumbnailFile);
         });
+      } else {
+        return null;
       }
     }
 
@@ -42,7 +44,10 @@ class _VideoThumbnailState extends State<VideoThumbnail> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(child: ElevatedButton(onPressed: _getVideoThumbnail, child: Text('Get File Thumbnail'))),
+            Container(
+                child: ElevatedButton(
+                    onPressed: _getVideoThumbnail,
+                    child: Text('Get File Thumbnail'))),
             _buildThumbnail(),
           ],
         ),
