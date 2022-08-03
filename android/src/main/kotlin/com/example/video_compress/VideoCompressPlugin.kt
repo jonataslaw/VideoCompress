@@ -78,6 +78,7 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
             }
             "compressVideo" -> {
                 val path = call.argument<String>("path")!!
+                val destPath = call.argument<String>("destPath")!!
                 val quality = call.argument<Int>("quality")!!
                 val deleteOrigin = call.argument<Boolean>("deleteOrigin")!!
                 val startTime = call.argument<Int>("startTime")
@@ -87,7 +88,6 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
 
                 val tempDir: String = context.getExternalFilesDir("video_compress")!!.absolutePath
                 val out = SimpleDateFormat("yyyy-MM-dd hh-mm-ss").format(Date())
-                val destPath: String = tempDir + File.separator + "VID_" + out + path.hashCode() + ".mp4"
 
                 var videoTrackStrategy: TrackStrategy = DefaultVideoStrategy.atMost(340).build();
                 val audioTrackStrategy: TrackStrategy
