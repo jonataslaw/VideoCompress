@@ -36,6 +36,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
             getMediaInfo(path, result)
         case "compressVideo":
             let path = args!["path"] as! String
+            let destPath = args!["destPath"] as! String
             let quality = args!["quality"] as! NSNumber
             let deleteOrigin = args!["deleteOrigin"] as! Bool
             let startTime = args!["startTime"] as? Double
