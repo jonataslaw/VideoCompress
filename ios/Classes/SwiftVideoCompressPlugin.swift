@@ -42,8 +42,9 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
             let duration = args!["duration"] as? Double
             let includeAudio = args!["includeAudio"] as? Bool
             let frameRate = args!["frameRate"] as? Int
+            let rotation = args!["rotation"] as? Int
             compressVideo(path, quality, deleteOrigin, startTime, duration, includeAudio,
-                          frameRate, result)
+                          frameRate, rotation, result)
         case "cancelCompression":
             cancelCompression(result)
         case "deleteAllCache":
@@ -175,7 +176,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
     }
     
     private func compressVideo(_ path: String,_ quality: NSNumber,_ deleteOrigin: Bool,_ startTime: Double?,
-                               _ duration: Double?,_ includeAudio: Bool?,_ frameRate: Int?,
+                               _ duration: Double?,_ includeAudio: Bool?,_ frameRate: Int?, _ rotation: Int?,
                                _ result: @escaping FlutterResult) {
         let sourceVideoUrl = Utility.getPathUrl(path)
         let sourceVideoType = "mp4"
@@ -199,31 +200,58 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         let timeRange: CMTimeRange = CMTimeRangeMake(start: cmStartTime, duration: cmDurationTime)
         
         let isIncludeAudio = includeAudio != nil ? includeAudio! : true
-        
-        let session = getComposition(isIncludeAudio, timeRange, sourceVideoTrack!)
-        
-        let exporter = AVAssetExportSession(asset: session, presetName: getExportPreset(quality))!
-        
-        exporter.outputURL = compressionUrl
-        exporter.outputFileType = AVFileType.mp4
-        exporter.shouldOptimizeForNetworkUse = true
-        
-        if frameRate != nil {
-            let videoComposition = AVMutableVideoComposition(propertiesOf: sourceVideoAsset)
-            videoComposition.frameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate!))
-            exporter.videoComposition = videoComposition
+
+        //input file
+        let asset = AVAsset.init(url: sourceVideoUrl)
+        print(asset)
+        let composition = AVMutableComposition.init()
+        composition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: kCMPersistentTrackID_Invalid)
+
+        //input clip
+        let clipVideoTrack = asset.tracks(withMediaType: AVMediaType.video)[0]
+
+        //make it composition
+        let videoComposition = AVMutableVideoComposition()
+        switch rotation {
+            case 0: videoComposition.renderSize = CGSize(width: CGFloat(clipVideoTrack.naturalSize.width), height: CGFloat(clipVideoTrack.naturalSize.height))
+            case 180: videoComposition.renderSize = CGSize(width: CGFloat(clipVideoTrack.naturalSize.width), height: CGFloat(clipVideoTrack.naturalSize.height))
+            case -90: videoComposition.renderSize = CGSize(width: CGFloat(clipVideoTrack.naturalSize.height), height: CGFloat(clipVideoTrack.naturalSize.width))
+            case 90: videoComposition.renderSize = CGSize(width: CGFloat(clipVideoTrack.naturalSize.height), height: CGFloat(clipVideoTrack.naturalSize.width))
+            default: videoComposition.renderSize = CGSize(width: CGFloat(clipVideoTrack.naturalSize.width), height: CGFloat(clipVideoTrack.naturalSize.height))
         }
-        
-        if !isIncludeAudio {
-            exporter.timeRange = timeRange
+        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate!))
+        let instruction = AVMutableVideoCompositionInstruction()
+        instruction.timeRange = timeRange
+
+        //rotate
+        let transformer = AVMutableVideoCompositionLayerInstruction(assetTrack: clipVideoTrack)
+        let t1 :CGAffineTransform
+        switch rotation {
+            case 0: t1 = CGAffineTransform(translationX: 0, y: 0)
+            case -90: t1 = CGAffineTransform(translationX: 0, y: clipVideoTrack.naturalSize.width)
+            case 90: t1 = CGAffineTransform(translationX: clipVideoTrack.naturalSize.height, y: 0)
+            case 180: t1 = CGAffineTransform(translationX: clipVideoTrack.naturalSize.width, y: clipVideoTrack.naturalSize.height)
+            default: t1 = CGAffineTransform(translationX: 0, y: 0)
         }
-        
+        let t2: CGAffineTransform = t1.rotated(by: CGFloat(rotation!) * .pi / 180)
+        let finalTransform: CGAffineTransform = t2
+        transformer.setTransform(finalTransform, at: CMTime.zero)
+        instruction.layerInstructions = [transformer]
+        videoComposition.instructions = [instruction]
+
+        //exporter
+        let exporter = AVAssetExportSession.init(asset: asset, presetName: getExportPreset(quality))
+        exporter?.outputFileType = AVFileType.mp4
+        exporter?.outputURL = compressionUrl
+        exporter?.videoComposition = videoComposition
+        exporter?.shouldOptimizeForNetworkUse = true
+
         Utility.deleteFile(compressionUrl.absoluteString)
         
         let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateProgress),
                                          userInfo: exporter, repeats: true)
         
-        exporter.exportAsynchronously(completionHandler: {
+        exporter?.exportAsynchronously(completionHandler: {
             timer.invalidate()
             if(self.stopCommand) {
                 self.stopCommand = false

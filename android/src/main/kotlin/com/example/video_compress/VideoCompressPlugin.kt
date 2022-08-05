@@ -84,6 +84,7 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                 val duration = call.argument<Int>("duration")
                 val includeAudio = call.argument<Boolean>("includeAudio") ?: true
                 val frameRate = if (call.argument<Int>("frameRate")==null) 30 else call.argument<Int>("frameRate")
+                val rotation = if (call.argument<Int>("rotation")==null) 0 else call.argument<Int>("rotation")
 
                 val tempDir: String = context.getExternalFilesDir("video_compress")!!.absolutePath
                 val out = SimpleDateFormat("yyyy-MM-dd hh-mm-ss").format(Date())
@@ -124,7 +125,7 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                     }
                     7 -> {
                         videoTrackStrategy = DefaultVideoStrategy.atMost(1080, 1920).build()
-                    }                    
+                    }
                 }
 
                 audioTrackStrategy = if (includeAudio) {
@@ -151,6 +152,7 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                         .addDataSource(dataSource)
                         .setAudioTrackStrategy(audioTrackStrategy)
                         .setVideoTrackStrategy(videoTrackStrategy)
+                        .setVideoRotation(rotation!!)
                         .setListener(object : TranscoderListener {
                             override fun onTranscodeProgress(progress: Double) {
                                 channel.invokeMethod("updateProgress", progress * 100.00)
