@@ -82,7 +82,7 @@ extension Compress on IVideoCompress {
       'position': position,
     }));
 
-    final file = File(filePath!);
+    final file = File(Uri.decodeFull(filePath!));
 
     return file;
   }
