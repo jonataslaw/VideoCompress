@@ -12,7 +12,7 @@ class MediaInfo {
 
   /// bytes
   int? filesize; // filesize
-  /// microsecond
+  /// milliseconds
   double? duration;
   bool? isCancel;
   File? file;
@@ -44,19 +44,19 @@ class MediaInfo {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['path'] = this.path;
-    data['title'] = this.title;
-    data['author'] = this.author;
-    data['width'] = this.width;
-    data['height'] = this.height;
-    if (this.orientation != null) {
-      data['orientation'] = this.orientation;
+    final data = <String, dynamic>{};
+    data['path'] = path;
+    data['title'] = title;
+    data['author'] = author;
+    data['width'] = width;
+    data['height'] = height;
+    if (orientation != null) {
+      data['orientation'] = orientation;
     }
-    data['filesize'] = this.filesize;
-    data['duration'] = this.duration;
-    if (this.isCancel != null) {
-      data['isCancel'] = this.isCancel;
+    data['filesize'] = filesize;
+    data['duration'] = duration;
+    if (isCancel != null) {
+      data['isCancel'] = isCancel;
     }
     data['file'] = File(path!).toString();
     return data;
