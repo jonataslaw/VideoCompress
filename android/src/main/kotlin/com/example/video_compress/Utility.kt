@@ -11,7 +11,7 @@ import java.io.File
 
 class Utility(private val channelName: String) {
 
-    fun isLandscapeImage(orientation: Int) = orientation != 90 && orientation != 270
+    fun isLandscapeImage(orientation: Int) = orientation == 90 || orientation == 270
 
     fun deleteFile(file: File) {
         if (file.exists()) {
