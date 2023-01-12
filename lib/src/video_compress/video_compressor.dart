@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:video_compress/src/progress_callback/compress_mixin.dart';
 import 'package:video_compress/video_compress.dart';
 
@@ -131,8 +132,8 @@ extension Compress on IVideoCompress {
     int? duration,
     bool? includeAudio,
     int frameRate = 30,
-    int? fileLengthLimit,
-    int? bitrate,
+    IosOptions? iosOptions,
+    AndroidOptions? androidOptions,
   }) async {
     if (isCompressing) {
       throw StateError('''VideoCompress Error: 
@@ -155,8 +156,9 @@ extension Compress on IVideoCompress {
       'duration': duration,
       'includeAudio': includeAudio,
       'frameRate': frameRate,
-      'fileLengthLimit': fileLengthLimit,
-      'bitrate': bitrate,
+      if (iosOptions?.fileLengthLimit != null)
+        'fileLengthLimit': iosOptions!.fileLengthLimit,
+      if (androidOptions?.bitrate != null) 'bitrate': androidOptions!.bitrate,
     });
 
     // ignore: invalid_use_of_protected_member
@@ -187,4 +189,23 @@ extension Compress on IVideoCompress {
       'logLevel': logLevel,
     });
   }
+}
+
+class IosOptions {
+  /// The file length that the output of the session must not exceed.
+  /// https://developer.apple.com/documentation/avfoundation/avassetexportsession/1622333-filelengthlimit
+  final int? fileLengthLimit;
+  IosOptions({
+    this.fileLengthLimit,
+  });
+}
+
+class AndroidOptions {
+  /// Desired bit rate (bits per second). Can optionally be
+  /// null, in which case the strategy will try to estimate the bitrate.
+  /// https://natario1.github.io/Transcoder/docs/track-strategies#other-options
+  final int? bitrate;
+  AndroidOptions({
+    this.bitrate,
+  });
 }
