@@ -112,6 +112,9 @@ extension Compress on IVideoCompress {
   /// determine whether to delete his source file by [deleteOrigin]
   /// optional parameters [startTime] [duration] [includeAudio] [frameRate]
   ///
+  /// [fileLengthLimit] works only on ios
+  /// [bitrate] works only on android
+  ///
   /// ## example
   /// ```dart
   /// final info = await _flutterVideoCompress.compressVideo(
@@ -129,6 +132,7 @@ extension Compress on IVideoCompress {
     bool? includeAudio,
     int frameRate = 30,
     int? fileLengthLimit,
+    int? bitrate,
   }) async {
     if (isCompressing) {
       throw StateError('''VideoCompress Error: 
@@ -152,6 +156,7 @@ extension Compress on IVideoCompress {
       'includeAudio': includeAudio,
       'frameRate': frameRate,
       'fileLengthLimit': fileLengthLimit,
+      'bitrate': bitrate,
     });
 
     // ignore: invalid_use_of_protected_member
