@@ -13,7 +13,9 @@ import com.otaliastudios.transcoder.strategy.RemoveTrackStrategy
 import com.otaliastudios.transcoder.strategy.TrackStrategy
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.BinaryMessenger
-import com.otaliastudios.transcoder.internal.Logger
+import com.otaliastudios.transcoder.internal.utils.Logger
+import com.otaliastudios.transcoder.resize.AtMostResizer
+import com.otaliastudios.transcoder.resize.ExactResizer
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -83,6 +85,9 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                 val duration = call.argument<Int>("duration")
                 val includeAudio = call.argument<Boolean>("includeAudio") ?: true
                 val frameRate = if (call.argument<Int>("frameRate")==null) 30 else call.argument<Int>("frameRate")
+                val bitRate = call.argument<Int>("bitRate")
+                val outputWidth = call.argument<Int>("outputWidth")
+                val outputHeight = call.argument<Int>("outputHeight")
 
                 val tempDir: String = context.getExternalFilesDir("video_compress")!!.absolutePath
                 val out = SimpleDateFormat("yyyy-MM-dd hh-mm-ss").format(Date())
@@ -94,14 +99,59 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                 when (quality) {
 
                     0 -> {
-                      videoTrackStrategy = DefaultVideoStrategy.atMost(720).build()
+
+                        assert(value = frameRate != null)
+                        videoTrackStrategy = if (bitRate==null){
+                            DefaultVideoStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .addResizer(AtMostResizer(720))
+                                .build()
+                        }else{
+                            DefaultVideoStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .bitRate(bitRate.toLong())
+                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .addResizer(AtMostResizer(720))
+                                .build()
+                        }
                     }
 
                     1 -> {
-                        videoTrackStrategy = DefaultVideoStrategy.atMost(360).build()
+
+                        assert(value = frameRate != null)
+                        videoTrackStrategy = if (bitRate==null){
+                            DefaultVideoStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .addResizer(AtMostResizer(360))
+                                .build()
+                        }else{
+                            DefaultVideoStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .bitRate(bitRate.toLong())
+                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .addResizer(AtMostResizer(360))
+                                .build()
+                        }
                     }
                     2 -> {
-                        videoTrackStrategy = DefaultVideoStrategy.atMost(640).build()
+
+                        assert(value = frameRate != null)
+                        videoTrackStrategy = if (bitRate==null){
+                            DefaultVideoStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .addResizer(AtMostResizer(640))
+                                .build()
+                        }else{
+                            DefaultVideoStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .bitRate(bitRate.toLong())
+                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .addResizer(AtMostResizer(640))
+                                .build()
+                        }
                     }
                     3 -> {
 
@@ -113,17 +163,112 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                                 .build()
                     }
                     4 -> {
-                        videoTrackStrategy = DefaultVideoStrategy.atMost(480, 640).build()
+
+                        assert(value = frameRate != null)
+                        videoTrackStrategy = if (bitRate==null){
+                            DefaultVideoStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .addResizer(AtMostResizer(480,640))
+                                .build()
+                        }else{
+                            DefaultVideoStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .bitRate(bitRate.toLong())
+                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .addResizer(AtMostResizer(480,640))
+                                .build()
+                        }
                     }
                     5 -> {
-                        videoTrackStrategy = DefaultVideoStrategy.atMost(540, 960).build()
+
+                        assert(value = frameRate != null)
+                        videoTrackStrategy = if (bitRate==null){
+                            DefaultVideoStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .addResizer(AtMostResizer(540,960))
+                                .build()
+                        }else{
+                            DefaultVideoStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .bitRate(bitRate.toLong())
+                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .addResizer(AtMostResizer(540,960))
+                                .build()
+                        }
                     }
                     6 -> {
-                        videoTrackStrategy = DefaultVideoStrategy.atMost(720, 1280).build()
+
+                        assert(value = frameRate != null)
+                        videoTrackStrategy = if (bitRate==null){
+                            DefaultVideoStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .addResizer(AtMostResizer(720, 1280))
+                                .build()
+                        }else{
+                            DefaultVideoStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .bitRate(bitRate.toLong())
+                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .addResizer(AtMostResizer(720,1280))
+                                .build()
+                        }
                     }
                     7 -> {
-                        videoTrackStrategy = DefaultVideoStrategy.atMost(1080, 1920).build()
-                    }                    
+
+                        assert(value = frameRate != null)
+                        videoTrackStrategy = if (bitRate==null){
+                            DefaultVideoStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .addResizer(AtMostResizer(1080,1920))
+                                .build()
+                        }else{
+                            DefaultVideoStrategy.Builder()
+                                .keyFrameInterval(3f)
+                                .bitRate(bitRate.toLong())
+                                .frameRate(frameRate!!) // will be capped to the input frameRate
+                                .addResizer(AtMostResizer(1080,1920))
+                                .build()
+                        }
+                    }
+                    8 -> {
+
+                        assert(value = frameRate != null)
+                        if(outputWidth != null && outputHeight != null) {
+                            videoTrackStrategy = if (bitRate == null) {
+                                DefaultVideoStrategy.Builder()
+                                    .keyFrameInterval(3f)
+                                    .frameRate(frameRate!!) // will be capped to the input frameRate
+                                    .addResizer(ExactResizer(outputWidth, outputHeight))
+                                    .build()
+                            } else {
+                                DefaultVideoStrategy.Builder()
+                                    .keyFrameInterval(3f)
+                                    .bitRate(bitRate.toLong())
+                                    .frameRate(frameRate!!) // will be capped to the input frameRate
+                                    .addResizer(ExactResizer(outputWidth, outputHeight))
+                                    .build()
+                            }
+                        }else{
+                            videoTrackStrategy = if (bitRate==null){
+                                DefaultVideoStrategy.Builder()
+                                    .keyFrameInterval(3f)
+                                    .frameRate(frameRate!!) // will be capped to the input frameRate
+                                    .addResizer(AtMostResizer(720, 1280))
+                                    .build()
+                            }else{
+                                DefaultVideoStrategy.Builder()
+                                    .keyFrameInterval(3f)
+                                    .bitRate(bitRate.toLong())
+                                    .frameRate(frameRate!!) // will be capped to the input frameRate
+                                    .addResizer(AtMostResizer(720,1280))
+                                    .build()
+                            }
+                        }
+                    }
                 }
 
                 audioTrackStrategy = if (includeAudio) {
