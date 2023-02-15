@@ -1,6 +1,9 @@
-## 3.1.2
+# 3.1.3
 - Fix build issues for Android due to old Kotlin plugin and update Android dependencies (@vbuberen)
 
+## 3.1.2
+- Fix "Failed to stop the muxer" and "java.lang.IllegalStateException" (@VoronovAlexander)
+- Fix files with spaces (@unknown-undefined)
 
 ## 3.1.1
 - Fix issue on iOS with files containing whitespaces (@kaiquegazola)
