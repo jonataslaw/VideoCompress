@@ -162,19 +162,6 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         }
     }
     
-    private func getComposition(_ isIncludeAudio: Bool,_ timeRange: CMTimeRange, _ sourceVideoTrack: AVAssetTrack)->AVAsset {
-        let composition = AVMutableComposition()
-        if !isIncludeAudio {
-            let compressionVideoTrack = composition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: kCMPersistentTrackID_Invalid)
-            compressionVideoTrack!.preferredTransform = sourceVideoTrack.preferredTransform
-            try? compressionVideoTrack!.insertTimeRange(timeRange, of: sourceVideoTrack, at: CMTime.zero)
-        } else {
-            return sourceVideoTrack.asset!
-        }
-        
-        return composition    
-    }
-    
     private func compressVideo(_ path: String,_ quality: NSNumber,_ deleteOrigin: Bool,_ startTime: Double?,
                                _ duration: Double?,_ includeAudio: Bool?,_ frameRate: Int?, _ rotation: Int?,
                                _ result: @escaping FlutterResult) {
@@ -182,7 +169,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         let sourceVideoType = "mp4"
         
         let sourceVideoAsset = avController.getVideoAsset(sourceVideoUrl)
-        let sourceVideoTrack = avController.getTrack(sourceVideoAsset)
+        let sourceVideoTrack = avController.getTrack(sourceVideoAsset)!
 
         let uuid = NSUUID()
         let compressionUrl =
@@ -201,46 +188,38 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         
         let isIncludeAudio = includeAudio != nil ? includeAudio! : true
 
-        //input file
-        let asset = AVAsset.init(url: sourceVideoUrl)
-        print(asset)
-        let composition = AVMutableComposition.init()
-        composition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: kCMPersistentTrackID_Invalid)
-
-        //input clip
-        let clipVideoTrack = asset.tracks(withMediaType: AVMediaType.video)[0]
-
-        //make it composition
-        let videoComposition = AVMutableVideoComposition()
-        switch rotation {
-            case 0: videoComposition.renderSize = CGSize(width: CGFloat(clipVideoTrack.naturalSize.width), height: CGFloat(clipVideoTrack.naturalSize.height))
-            case 180: videoComposition.renderSize = CGSize(width: CGFloat(clipVideoTrack.naturalSize.width), height: CGFloat(clipVideoTrack.naturalSize.height))
-            case -90: videoComposition.renderSize = CGSize(width: CGFloat(clipVideoTrack.naturalSize.height), height: CGFloat(clipVideoTrack.naturalSize.width))
-            case 90: videoComposition.renderSize = CGSize(width: CGFloat(clipVideoTrack.naturalSize.height), height: CGFloat(clipVideoTrack.naturalSize.width))
-            default: videoComposition.renderSize = CGSize(width: CGFloat(clipVideoTrack.naturalSize.width), height: CGFloat(clipVideoTrack.naturalSize.height))
-        }
+        let videoComposition = AVMutableVideoComposition(propertiesOf: sourceVideoAsset)
         videoComposition.frameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate!))
-        let instruction = AVMutableVideoCompositionInstruction()
-        instruction.timeRange = timeRange
 
-        //rotate
-        let transformer = AVMutableVideoCompositionLayerInstruction(assetTrack: clipVideoTrack)
-        let t1 :CGAffineTransform
-        switch rotation {
-            case 0: t1 = CGAffineTransform(translationX: 0, y: 0)
-            case -90: t1 = CGAffineTransform(translationX: 0, y: clipVideoTrack.naturalSize.width)
-            case 90: t1 = CGAffineTransform(translationX: clipVideoTrack.naturalSize.height, y: 0)
-            case 180: t1 = CGAffineTransform(translationX: clipVideoTrack.naturalSize.width, y: clipVideoTrack.naturalSize.height)
-            default: t1 = CGAffineTransform(translationX: 0, y: 0)
+        // Rotate the compressed video if needed.
+        if rotation != 0 {
+             switch rotation {
+                case 0: videoComposition.renderSize = CGSize(width: CGFloat(sourceVideoTrack.naturalSize.width), height: CGFloat(sourceVideoTrack.naturalSize.height))
+                case 180: videoComposition.renderSize = CGSize(width: CGFloat(sourceVideoTrack.naturalSize.width), height: CGFloat(sourceVideoTrack.naturalSize.height))
+                case -90: videoComposition.renderSize = CGSize(width: CGFloat(sourceVideoTrack.naturalSize.height), height: CGFloat(sourceVideoTrack.naturalSize.width))
+                case 90: videoComposition.renderSize = CGSize(width: CGFloat(sourceVideoTrack.naturalSize.height), height: CGFloat(sourceVideoTrack.naturalSize.width))
+                default: videoComposition.renderSize = CGSize(width: CGFloat(sourceVideoTrack.naturalSize.width), height: CGFloat(sourceVideoTrack.naturalSize.height))
+            }
+
+            let instruction = AVMutableVideoCompositionInstruction()
+            instruction.timeRange = timeRange
+            let transformer = AVMutableVideoCompositionLayerInstruction(assetTrack: sourceVideoTrack)
+            let t1 :CGAffineTransform
+            switch rotation {
+                case 0: t1 = CGAffineTransform(translationX: 0, y: 0)
+                case -90: t1 = CGAffineTransform(translationX: 0, y: sourceVideoTrack.naturalSize.width)
+                case 90: t1 = CGAffineTransform(translationX: sourceVideoTrack.naturalSize.height, y: 0)
+                case 180: t1 = CGAffineTransform(translationX: sourceVideoTrack.naturalSize.width, y: sourceVideoTrack.naturalSize.height)
+                default: t1 = CGAffineTransform(translationX: 0, y: 0)
+            }
+            let t2: CGAffineTransform = t1.rotated(by: CGFloat(rotation!) * .pi / 180)
+            let finalTransform: CGAffineTransform = t2
+            transformer.setTransform(finalTransform, at: CMTime.zero)
+            instruction.layerInstructions = [transformer]
+            videoComposition.instructions = [instruction]
         }
-        let t2: CGAffineTransform = t1.rotated(by: CGFloat(rotation!) * .pi / 180)
-        let finalTransform: CGAffineTransform = t2
-        transformer.setTransform(finalTransform, at: CMTime.zero)
-        instruction.layerInstructions = [transformer]
-        videoComposition.instructions = [instruction]
 
-        //exporter
-        let exporter = AVAssetExportSession.init(asset: asset, presetName: getExportPreset(quality))
+        let exporter = AVAssetExportSession.init(asset: sourceVideoAsset, presetName: getExportPreset(quality))
         exporter?.outputFileType = AVFileType.mp4
         exporter?.outputURL = compressionUrl
         exporter?.videoComposition = videoComposition
