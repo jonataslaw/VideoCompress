@@ -25,6 +25,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.example.video_compress'
+    }
     compileSdkVersion 31
 
     sourceSets {
