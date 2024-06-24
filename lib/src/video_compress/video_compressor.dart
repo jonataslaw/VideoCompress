@@ -122,6 +122,7 @@ extension Compress on IVideoCompress {
   /// ```
   Future<MediaInfo?> compressVideo(
     String path, {
+    required String destPath,
     VideoQuality quality = VideoQuality.DefaultQuality,
     bool deleteOrigin = false,
     int? startTime,
@@ -144,6 +145,7 @@ extension Compress on IVideoCompress {
     setProcessingStatus(true);
     final jsonStr = await _invoke<String>('compressVideo', {
       'path': path,
+      'destPath': destPath,
       'quality': quality.index,
       'deleteOrigin': deleteOrigin,
       'startTime': startTime,
@@ -169,8 +171,11 @@ extension Compress on IVideoCompress {
     await _invoke<void>('cancelCompression');
   }
 
+  /// because path can be provided via compress method,
+  /// this method only deletes files in cache_dir/video_compress
   /// delete the cache folder, please do not put other things
   /// in the folder of this plugin, it will be cleared
+  @deprecated
   Future<bool?> deleteAllCache() async {
     return await _invoke<bool>('deleteAllCache');
   }

@@ -36,13 +36,14 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
             getMediaInfo(path, result)
         case "compressVideo":
             let path = args!["path"] as! String
+            let destPath = args!["destPath"] as! String
             let quality = args!["quality"] as! NSNumber
             let deleteOrigin = args!["deleteOrigin"] as! Bool
             let startTime = args!["startTime"] as? Double
             let duration = args!["duration"] as? Double
             let includeAudio = args!["includeAudio"] as? Bool
             let frameRate = args!["frameRate"] as? Int
-            compressVideo(path, quality, deleteOrigin, startTime, duration, includeAudio,
+            compressVideo(path, destPath, quality, deleteOrigin, startTime, duration, includeAudio,
                           frameRate, result)
         case "cancelCompression":
             cancelCompression(result)
@@ -174,18 +175,18 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         return composition    
     }
     
-    private func compressVideo(_ path: String,_ quality: NSNumber,_ deleteOrigin: Bool,_ startTime: Double?,
+    private func compressVideo(_ path: String, _ compressionPath: String, _ quality: NSNumber,_ deleteOrigin: Bool,_ startTime: Double?,
                                _ duration: Double?,_ includeAudio: Bool?,_ frameRate: Int?,
                                _ result: @escaping FlutterResult) {
         let sourceVideoUrl = Utility.getPathUrl(path)
         let sourceVideoType = "mp4"
-        
+
+        let compressionUrl = Utility.getPathUrl(compressionPath)
+
         let sourceVideoAsset = avController.getVideoAsset(sourceVideoUrl)
         let sourceVideoTrack = avController.getTrack(sourceVideoAsset)
 
         let uuid = NSUUID()
-        let compressionUrl =
-        Utility.getPathUrl("\(Utility.basePath())/\(Utility.getFileName(path))\(uuid.uuidString).\(sourceVideoType)")
 
         let timescale = sourceVideoAsset.duration.timescale
         let minStartTime = Double(startTime ?? 0)
