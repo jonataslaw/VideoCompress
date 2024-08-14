@@ -118,6 +118,7 @@ class _Compress extends State<Compress> {
 
   @override
   void initState() {
+    VideoCompress videoCompress = new VideoCompress();
     super.initState();
     _subscription =
         VideoCompress.compressProgress$.subscribe((progress) {
