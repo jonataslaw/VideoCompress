@@ -17,7 +17,6 @@ import com.otaliastudios.transcoder.internal.utils.Logger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -198,12 +197,6 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
 
     companion object {
         private const val TAG = "video_compress"
-
-        @JvmStatic
-        fun registerWith(registrar: Registrar) {
-            val instance = VideoCompressPlugin()
-            instance.init(registrar.context(), registrar.messenger())
-        }
     }
 
 }

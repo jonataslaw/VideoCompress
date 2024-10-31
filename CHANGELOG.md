@@ -1,3 +1,7 @@
+## 3.1.4
+
+- Removes references to v1 Flutter Android embedding classes.
+
 ## 3.1.3
 
 - Update build.gradle (@dharambudh1)
