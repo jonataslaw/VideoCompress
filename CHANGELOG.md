@@ -2,7 +2,7 @@
 - Bump up transcoder to 0.11.2
 - Enhancement: support pass-through audio with more than 2 channels
 - Update build.gradle
-- Update Java version to 11
+- Update example app
 
 ## 3.1.4
 

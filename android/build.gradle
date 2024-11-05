@@ -24,10 +24,6 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
-kotlin {
-    jvmToolchain(11)
-}
-
 android {
     namespace 'com.example.video_compress'
     
@@ -39,11 +35,11 @@ android {
     compileSdk 34
 
     compileOptions {
-        sourceCompatibility 11
-        targetCompatibility 11
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
 
     sourceSets {
