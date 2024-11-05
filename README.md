@@ -42,6 +42,21 @@ with `pub`:
 $  pub get
 ```
 
+For Android, in settings.gradle file, update this in pluginManagement [ shown in example app ]
+````
+    buildscript {
+        repositories {
+            mavenCentral()
+            maven {
+                url = uri("https://storage.googleapis.com/r8-releases/raw")
+            }
+        }
+        dependencies {
+            classpath("com.android.tools:r8:8.2.24")
+        }
+    }
+````    
+
 ### 3. Import it
 
 Now in your `Dart` code, you can use: 
