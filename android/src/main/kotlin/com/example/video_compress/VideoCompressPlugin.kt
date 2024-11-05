@@ -130,8 +130,7 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                     val channels = DefaultAudioStrategy.CHANNELS_AS_INPUT
 
                     DefaultAudioStrategy.builder()
-//                        .channels(channels)
-                        .channels(2)
+                        .channels(channels)
                         .sampleRate(sampleRate)
                         .build()
                 } else {
