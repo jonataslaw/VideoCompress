@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 abstract class Enum<T> {
   final T _value;
 
@@ -106,5 +108,5 @@ class MediaMetadataRetriever<int> extends Enum<int> {
   /// [Android] API level 10
   static const METADATA_KEY_YEAR = MediaMetadataRetriever(8);
 
-  const MediaMetadataRetriever(int value) : super(value);
+  const MediaMetadataRetriever(super.value);
 }
