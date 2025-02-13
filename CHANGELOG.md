@@ -1,3 +1,9 @@
+## 3.1.5
+- Bump up transcoder to 0.11.2
+- Enhancement: support pass-through audio with more than 2 channels
+- Update build.gradle
+- Update example app
+
 ## 3.1.4
 
 - Removes references to v1 Flutter Android embedding classes.
