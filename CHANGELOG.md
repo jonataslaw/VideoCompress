@@ -1,3 +1,6 @@
+## 3.1.5
+- Fix getThumbnail position being supplied in milliseconds, but used as microseconds in Android and seconds in iOS
+
 ## 3.1.4
 
 - Removes references to v1 Flutter Android embedding classes.
