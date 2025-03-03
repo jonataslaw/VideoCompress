@@ -82,28 +82,35 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                 val duration = call.argument<Int>("duration")
                 val includeAudio = call.argument<Boolean>("includeAudio") ?: true
                 val frameRate = if (call.argument<Int>("frameRate")==null) 30 else call.argument<Int>("frameRate")
+                val bitrate = if (call.argument<Int>("bitrate")==null) DefaultVideoStrategy.BITRATE_UNKNOWN else call.argument<Int>("bitrate")
 
                 val tempDir: String = context.getExternalFilesDir("video_compress")!!.absolutePath
                 val out = SimpleDateFormat("yyyy-MM-dd hh-mm-ss").format(Date())
                 val destPath: String = tempDir + File.separator + "VID_" + out + path.hashCode() + ".mp4"
 
                 var videoTrackStrategy: TrackStrategy = DefaultVideoStrategy.atMost(340).build();
-                val audioTrackStrategy: TrackStrategy
 
                 when (quality) {
-
                     0 -> {
-                      videoTrackStrategy = DefaultVideoStrategy.atMost(720).build()
+                      videoTrackStrategy = DefaultVideoStrategy
+                          .atMost(720)
+                          .bitRate(bitrate!!.toLong())
+                          .frameRate(frameRate!!).build()
                     }
 
                     1 -> {
-                        videoTrackStrategy = DefaultVideoStrategy.atMost(360).build()
+                        videoTrackStrategy = DefaultVideoStrategy
+                            .atMost(360)
+                            .bitRate(bitrate!!.toLong())
+                            .frameRate(frameRate!!).build()
                     }
                     2 -> {
-                        videoTrackStrategy = DefaultVideoStrategy.atMost(640).build()
+                        videoTrackStrategy = DefaultVideoStrategy
+                            .atMost(640)
+                            .bitRate(bitrate!!.toLong())
+                            .frameRate(frameRate!!).build()
                     }
                     3 -> {
-
                         assert(value = frameRate != null)
                         videoTrackStrategy = DefaultVideoStrategy.Builder()
                                 .keyFrameInterval(3f)
@@ -112,20 +119,32 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                                 .build()
                     }
                     4 -> {
-                        videoTrackStrategy = DefaultVideoStrategy.atMost(480, 640).build()
+                        videoTrackStrategy = DefaultVideoStrategy
+                            .atMost(480, 640)
+                            .bitRate(bitrate!!.toLong())
+                            .frameRate(frameRate!!).build()
                     }
                     5 -> {
-                        videoTrackStrategy = DefaultVideoStrategy.atMost(540, 960).build()
+                        videoTrackStrategy = DefaultVideoStrategy
+                            .atMost(540, 960)
+                            .bitRate(bitrate!!.toLong())
+                            .frameRate(frameRate!!).build()
                     }
                     6 -> {
-                        videoTrackStrategy = DefaultVideoStrategy.atMost(720, 1280).build()
+                        videoTrackStrategy = DefaultVideoStrategy
+                            .atMost(720, 1280)
+                            .bitRate(bitrate!!.toLong())
+                            .frameRate(frameRate!!).build()
                     }
                     7 -> {
-                        videoTrackStrategy = DefaultVideoStrategy.atMost(1080, 1920).build()
+                        videoTrackStrategy = DefaultVideoStrategy
+                            .atMost(1080, 1920)
+                            .bitRate(bitrate!!.toLong())
+                            .frameRate(frameRate!!).build()
                     }                    
                 }
 
-                audioTrackStrategy = if (includeAudio) {
+                val audioTrackStrategy: TrackStrategy = if (includeAudio) {
                     val sampleRate = DefaultAudioStrategy.SAMPLE_RATE_AS_INPUT
                     val channels = DefaultAudioStrategy.CHANNELS_AS_INPUT
 
