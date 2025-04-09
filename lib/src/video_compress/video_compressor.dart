@@ -37,9 +37,10 @@ extension Compress on IVideoCompress {
   Future<T?> _invoke<T>(String name, [Map<String, dynamic>? params]) async {
     T? result;
     try {
-      result = params != null
-          ? await channel.invokeMethod(name, params)
-          : await channel.invokeMethod(name);
+      result =
+          params != null
+              ? await channel.invokeMethod(name, params)
+              : await channel.invokeMethod(name);
     } on PlatformException catch (e) {
       debugPrint('''Error from VideoCompress: 
       Method: $name
@@ -68,7 +69,7 @@ extension Compress on IVideoCompress {
   /// getFileThumbnail return [Future<File>]
   /// quality can be controlled by [quality] from 1 to 100,
   /// select the position unit in the video by [position] is milliseconds
-  Future<File> getFileThumbnail(
+  Future<File?> getFileThumbnail(
     String path, {
     int quality = 100,
     int position = -1,
@@ -83,7 +84,11 @@ extension Compress on IVideoCompress {
       'position': position,
     }));
 
-    final file = File(Uri.decodeFull(filePath!));
+    if (filePath == null) {
+      return null;
+    }
+
+    final file = File(Uri.decodeFull(filePath));
 
     return file;
   }
@@ -130,9 +135,11 @@ extension Compress on IVideoCompress {
     int frameRate = 30,
   }) async {
     if (isCompressing) {
-      throw StateError('''VideoCompress Error: 
+      throw StateError(
+        '''VideoCompress Error: 
       Method: compressVideo
-      Already have a compression process, you need to wait for the process to finish or stop it''');
+      Already have a compression process, you need to wait for the process to finish or stop it''',
+      );
     }
 
     if (compressProgress$.notSubscribed) {
@@ -176,8 +183,6 @@ extension Compress on IVideoCompress {
   }
 
   Future<void> setLogLevel(int logLevel) async {
-    return await _invoke<void>('setLogLevel', {
-      'logLevel': logLevel,
-    });
+    return await _invoke<void>('setLogLevel', {'logLevel': logLevel});
   }
 }
