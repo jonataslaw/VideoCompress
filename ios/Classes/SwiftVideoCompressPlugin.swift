@@ -214,9 +214,7 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
             exporter.videoComposition = videoComposition
         }
         
-        if !isIncludeAudio {
-            exporter.timeRange = timeRange
-        }
+        exporter.timeRange = timeRange
         
         Utility.deleteFile(compressionUrl.absoluteString)
         
