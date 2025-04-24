@@ -188,10 +188,10 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         Utility.getPathUrl("\(Utility.basePath())/\(Utility.getFileName(path))\(uuid.uuidString).\(sourceVideoType)")
 
         let timescale = sourceVideoAsset.duration.timescale
-        let minStartTime = Double(startTime ?? 0)
+        let minStartTime = Double(startTime ?? 0) / 1000.0
         
         let videoDuration = sourceVideoAsset.duration.seconds
-        let minDuration = Double(duration ?? videoDuration)
+        let minDuration = Double(duration != nil ? ((duration ?? 0) / 1000.0) : videoDuration)
         let maxDurationTime = minStartTime + minDuration < videoDuration ? minDuration : videoDuration
         
         let cmStartTime = CMTimeMakeWithSeconds(minStartTime, preferredTimescale: timescale)
