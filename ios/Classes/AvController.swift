@@ -42,6 +42,16 @@ class AvController: NSObject {
         }
     }
     
+    public func isVideoRotatedToPortraitUp(_ track: AVAssetTrack) -> Bool {
+        let t = track.preferredTransform
+        return t.b == 1 && t.c == -1
+    }
+    
+    public func isVideoRotatedToPortraitUpsideDown(_ track: AVAssetTrack) -> Bool {
+        let t = track.preferredTransform
+        return t.b == -1 && t.c == 1
+    }
+    
     public func getMetaDataByTag(_ asset:AVAsset,key:String)->String {
         for item in asset.commonMetadata {
             if item.commonKey?.rawValue == key {

@@ -171,7 +171,25 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
             return sourceVideoTrack.asset!
         }
         
-        return composition    
+        return composition
+    }
+    
+    private func getVideoAdjustedSize(_ sourceVideoTrack: AVAssetTrack) -> CGSize {
+        var transform = sourceVideoTrack.preferredTransform
+        var adjustedSize = sourceVideoTrack.naturalSize.applying(transform)
+        adjustedSize.width = abs(adjustedSize.width)
+        adjustedSize.height = abs(adjustedSize.height)
+        return adjustedSize
+    }
+    
+    private func getVideoTransform(videoTrack sourceVideoTrack: AVAssetTrack, videoSize: CGSize) -> CGAffineTransform {
+        var transform = sourceVideoTrack.preferredTransform
+        if avController.isVideoRotatedToPortraitUp(sourceVideoTrack) {
+            transform.tx = videoSize.width
+        } else if avController.isVideoRotatedToPortraitUpsideDown(sourceVideoTrack) {
+            transform.ty = videoSize.height
+        }
+        return transform
     }
     
     private func compressVideo(_ path: String,_ quality: NSNumber,_ deleteOrigin: Bool,_ startTime: Double?,
@@ -211,6 +229,22 @@ public class SwiftVideoCompressPlugin: NSObject, FlutterPlugin {
         if frameRate != nil {
             let videoComposition = AVMutableVideoComposition(propertiesOf: sourceVideoAsset)
             videoComposition.frameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate!))
+            if let sourceVideoTrack {
+                let adjustedSize = getVideoAdjustedSize(sourceVideoTrack)
+                videoComposition.renderSize = adjustedSize
+                
+                let transform = getVideoTransform(videoTrack: sourceVideoTrack, videoSize: adjustedSize)
+                
+                let instruction = AVMutableVideoCompositionInstruction()
+                instruction.timeRange = CMTimeRange(start: .zero, duration: sourceVideoAsset.duration)
+                
+                let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: sourceVideoTrack)
+                
+                layerInstruction.setTransform(transform, at: .zero)
+                
+                instruction.layerInstructions = [layerInstruction]
+                videoComposition.instructions = [instruction]
+            }
             exporter.videoComposition = videoComposition
         }
         
