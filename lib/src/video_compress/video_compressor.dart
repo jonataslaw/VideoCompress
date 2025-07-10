@@ -83,9 +83,13 @@ extension Compress on IVideoCompress {
       'position': position,
     }));
 
-    final file = File(Uri.decodeFull(filePath!));
-
-    return file;
+    String decodedThumbnailPath;
+    try {
+      decodedThumbnailPath = Uri.decodeFull(filePath!);
+    } catch (e) {
+      decodedThumbnailPath = filePath!;
+    }
+    return File(decodedThumbnailPath);
   }
 
   /// get media information from [path]
