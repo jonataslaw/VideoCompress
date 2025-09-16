@@ -5,7 +5,7 @@ Compress videos, remove audio, manipulate thumbnails, and make your video compat
 In addition, google chrome uses VP8/VP9, safari uses h264, and most of the time, it is necessary to encode the video in two formats, but not with this library.
 All video files are encoded in an MP4 container with AAC audio that allows 100% compatibility with safari, mozila, chrome, android and iOS.
 
-Works on ANDROID, IOS and desktop (just MacOS for now).
+Works on ANDROID, IOS and desktop (just MacOS and Linux for now).
 
 
 
