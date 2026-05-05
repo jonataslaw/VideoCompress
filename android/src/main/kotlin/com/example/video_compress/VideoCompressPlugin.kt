@@ -63,7 +63,7 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                 result.success(Utility(channelName).getMediaInfoJson(context, path!!).toString())
             }
             "deleteAllCache" -> {
-                result.success(Utility(channelName).deleteAllCache(context, result));
+                Utility(channelName).deleteAllCache(context, result)
             }
             "setLogLevel" -> {
                 val logLevel = call.argument<Int>("logLevel")!!

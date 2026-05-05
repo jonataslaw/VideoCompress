@@ -1,3 +1,10 @@
+## 3.1.5 (hm-toan fork)
+
+- fix(android): remove hardcoded `io.flutter:flutter_embedding_debug` with stale
+  engine hash — Flutter tool auto-injects the correct embedding variant via
+  `flutter.gradle`. Hardcoding it broke `releaseCompileClasspath` resolution
+  on current Flutter SDKs.
+
 ## 3.1.4
 
 - Removes references to v1 Flutter Android embedding classes.

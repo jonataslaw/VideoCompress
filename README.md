@@ -1,5 +1,21 @@
 # video_compress
 
+> **Fork notice (hm-toan):** Fork of [jonataslaw/VideoCompress](https://github.com/jonataslaw/VideoCompress) maintained for Flutter 3.41+ compatibility.
+>
+> Changes vs upstream:
+> - AGP 8.11.1, Kotlin 1.9.10, compileSdk 35 (16 KB page-size support)
+> - Transcoder bumped to 0.11.2
+> - Drops hardcoded `io.flutter:flutter_embedding_debug` (broke `releaseCompileClasspath` on current Flutter SDKs)
+>
+> Consume via git ref, e.g. in `pubspec.yaml`:
+> ```yaml
+> dependency_overrides:
+>   video_compress:
+>     git:
+>       url: https://github.com/hm-toan/VideoCompress.git
+>       ref: v3.1.5
+> ```
+
 Compress videos, remove audio, manipulate thumbnails, and make your video compatible with all platforms through this lightweight and efficient library.
 100% native code was used, we do not use FFMPEG as it is very slow, bloated and the GNU license is an obstacle for commercial applications.
 In addition, google chrome uses VP8/VP9, safari uses h264, and most of the time, it is necessary to encode the video in two formats, but not with this library.
