@@ -1,3 +1,4 @@
+import Foundation
 
 class Utility: NSObject {
     static let fileManager = FileManager.default
@@ -32,6 +33,10 @@ class Utility: NSObject {
     
     static func excludeFileProtocol(_ path: String)->String {
         return path.replacingOccurrences(of: "file://", with: "")
+    }
+    
+    static func excludeEncoding(_ path: String) -> String{
+        return path.removingPercentEncoding!
     }
     
     static func keyValueToJson(_ keyAndValue: [String : Any?])->String {

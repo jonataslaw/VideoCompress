@@ -13,9 +13,9 @@ A new flutter plugin project.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Jonny Borges' => 'jonataborges01@gmail.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'video_compress/Sources/video_compress/**/*.swift'
   s.dependency 'FlutterMacOS'
-  s.platform = :osx, '10.11'
+  s.platform = :osx, '10.14'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 end
 

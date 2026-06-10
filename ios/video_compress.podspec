@@ -13,9 +13,8 @@ A new flutter plugin project.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Jonny Borges' => 'jonataborges01@gmail.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
-  s.public_header_files = 'Classes/**/*.h'
+  s.source_files = 'video_compress/Sources/video_compress/**/*.swift'
   s.dependency 'Flutter'
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '12.0'
 end
 
