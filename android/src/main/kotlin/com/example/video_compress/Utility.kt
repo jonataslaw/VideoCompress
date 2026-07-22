@@ -52,7 +52,7 @@ class Utility(private val channelName: String) {
             null
         }
         val ori = orientation?.toIntOrNull()
-        if (ori != null && isLandscapeImage(ori)) {
+        if (ori != null && !isLandscapeImage(ori)) {
             val tmp = width
             width = height
             height = tmp
