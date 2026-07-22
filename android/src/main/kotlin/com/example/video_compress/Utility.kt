@@ -2,6 +2,7 @@ package com.example.video_compress
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -78,11 +79,14 @@ class Utility(private val channelName: String) {
 
     fun getBitmap(path: String, position: Long, result: MethodChannel.Result): Bitmap {
         var bitmap: Bitmap? = null
+        var rotation = 0
         val retriever = MediaMetadataRetriever()
 
         try {
             retriever.setDataSource(path)
             bitmap = retriever.getFrameAtTime(position, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+            rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
+                    ?.toIntOrNull() ?: 0
         } catch (ex: IllegalArgumentException) {
             result.error(channelName, "Assume this is a corrupt video file", null)
         } catch (ex: RuntimeException) {
@@ -96,6 +100,15 @@ class Utility(private val channelName: String) {
         }
 
         if (bitmap == null) result.success(emptyArray<Int>())
+
+        // getFrameAtTime()은 회전 메타데이터를 반영하지 않고 원본 인코딩 방향 그대로
+        // 비트맵을 반환한다 (세로로 촬영된 영상도 인코딩 자체는 가로인 경우가 많음).
+        // 실제 재생 방향과 맞추기 위해 회전 각도만큼 직접 돌려준다.
+        if (rotation != 0) {
+            val matrix = Matrix()
+            matrix.postRotate(rotation.toFloat())
+            bitmap = Bitmap.createBitmap(bitmap!!, 0, 0, bitmap!!.width, bitmap!!.height, matrix, true)
+        }
 
         val width = bitmap!!.width
         val height = bitmap.height
