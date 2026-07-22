@@ -5,6 +5,8 @@ import android.net.Uri
 import android.util.Log
 import com.otaliastudios.transcoder.Transcoder
 import com.otaliastudios.transcoder.TranscoderListener
+import com.otaliastudios.transcoder.resize.AtMostResizer
+import com.otaliastudios.transcoder.source.DataSource
 import com.otaliastudios.transcoder.source.TrimDataSource
 import com.otaliastudios.transcoder.source.UriDataSource
 import com.otaliastudios.transcoder.strategy.DefaultAudioStrategy
@@ -118,7 +120,15 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                         videoTrackStrategy = DefaultVideoStrategy.atMost(540, 960).build()
                     }
                     6 -> {
-                        videoTrackStrategy = DefaultVideoStrategy.atMost(720, 1280).build()
+                        val bitRate = call.argument<Number>("bitRate")?.toLong()
+                        videoTrackStrategy = if (bitRate != null) {
+                            DefaultVideoStrategy.Builder()
+                                    .addResizer(AtMostResizer(720))
+                                    .bitRate(bitRate)
+                                    .build()
+                        } else {
+                            DefaultVideoStrategy.atMost(720, 1280).build()
+                        }
                     }
                     7 -> {
                         videoTrackStrategy = DefaultVideoStrategy.atMost(1080, 1920).build()
@@ -137,12 +147,13 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                     RemoveTrackStrategy()
                 }
 
-                val dataSource = if (startTime != null || duration != null){
+                val rawDataSource: DataSource = if (startTime != null || duration != null){
                     val source = UriDataSource(context, Uri.parse(path))
                     TrimDataSource(source, (1000 * 1000 * (startTime ?: 0)).toLong(), (1000 * 1000 * (duration ?: 0)).toLong())
                 }else{
                     UriDataSource(context, Uri.parse(path))
                 }
+                val dataSource = DolbyVisionCompatDataSource(rawDataSource)
 
 
                 transcodeFuture = Transcoder.into(destPath!!)
@@ -168,7 +179,7 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                             }
 
                             override fun onTranscodeFailed(exception: Throwable) {
-                                result.success(null)
+                                result.error("compress_error", exception.message, null)
                             }
                         }).transcode()
             }
