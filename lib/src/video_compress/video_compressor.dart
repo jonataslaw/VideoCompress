@@ -128,6 +128,12 @@ extension Compress on IVideoCompress {
     int? duration,
     bool? includeAudio,
     int frameRate = 30,
+    // Android only: explicit target bitrate (bits/sec). When set for
+    // Res1280x720Quality, combines with an orientation-agnostic 720
+    // short-edge resizer instead of the canned atMost(720,1280) preset.
+    int? bitRate,
+    // iOS only: caps AVAssetExportSession output size in bytes.
+    int? fileLengthLimit,
   }) async {
     if (isCompressing) {
       throw StateError('''VideoCompress Error: 
@@ -150,6 +156,8 @@ extension Compress on IVideoCompress {
       'duration': duration,
       'includeAudio': includeAudio,
       'frameRate': frameRate,
+      'bitRate': bitRate,
+      'fileLengthLimit': fileLengthLimit,
     });
 
     // ignore: invalid_use_of_protected_member
