@@ -1,3 +1,6 @@
+.build/
+.swiftpm/
+
 .DS_Store
 .atom/
 .idea/

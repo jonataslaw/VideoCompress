@@ -1,4 +1,8 @@
-# video_compress
+# video_compress_advanced
+
+[![pub package](https://img.shields.io/pub/v/video_compress_advanced.svg?logo=dart)](https://pub.dev/packages/video_compress_advanced)
+
+Community-maintained fork of [jonataslaw/VideoCompress](https://github.com/jonataslaw/VideoCompress), republished as **`video_compress_advanced`** on [pub.dev](https://pub.dev/packages/video_compress_advanced). Maintained by [Nafis Kabbo](https://github.com/nafiskabbo). Issues and pull requests are welcome at [nafiskabbo/video_compress_advanced](https://github.com/nafiskabbo/video_compress_advanced).
 
 Compress videos, remove audio, manipulate thumbnails, and make your video compatible with all platforms through this lightweight and efficient library.
 100% native code was used, we do not use FFMPEG as it is very slow, bloated and the GNU license is an obstacle for commercial applications.
@@ -29,7 +33,15 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  video_compress: ^3.1.0
+  video_compress_advanced: ^4.0.2
+```
+
+### Migrating from `video_compress`
+
+Replace the dependency name in your app `pubspec.yaml`. Dart APIs stay the same; update the import URI:
+
+```dart
+import 'package:video_compress_advanced/video_compress_advanced.dart';
 ```
 
 ### 2. Install it
@@ -42,12 +54,27 @@ with `pub`:
 $  pub get
 ```
 
+For Android, in settings.gradle file, update this in pluginManagement [ shown in example app ]
+````
+    buildscript {
+        repositories {
+            mavenCentral()
+            maven {
+                url = uri("https://storage.googleapis.com/r8-releases/raw")
+            }
+        }
+        dependencies {
+            classpath("com.android.tools:r8:8.2.24")
+        }
+    }
+````    
+
 ### 3. Import it
 
 Now in your `Dart` code, you can use: 
 
 ````dart
-import 'package:video_compress/video_compress.dart';
+import 'package:video_compress_advanced/video_compress_advanced.dart';
 ````
 
 # How to use
@@ -55,7 +82,7 @@ import 'package:video_compress/video_compress.dart';
 ### Imports
 
 ````dart
-import 'package:video_compress/video_compress.dart';
+import 'package:video_compress_advanced/video_compress_advanced.dart';
     
 ````
 

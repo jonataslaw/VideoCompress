@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:video_compress/video_compress.dart';
-import 'package:video_compress_example/video_thumbnail.dart';
+import 'package:video_compress_advanced/video_compress_advanced.dart';
+import 'package:video_compress_advanced_example/video_thumbnail.dart';
 
 void main() {
   runApp(MyApp());

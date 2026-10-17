@@ -1,4 +1,4 @@
-library video_compress;
+library video_compress_advanced;
 
 export 'src/video_compress/video_compressor.dart';
 export 'src/video_compress/video_quality.dart';

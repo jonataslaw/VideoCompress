@@ -6,7 +6,7 @@ abstract class Enum<T> {
   T get value => _value;
 }
 
-class MediaMetadataRetriever<int> extends Enum<int> {
+class MediaMetadataRetriever extends Enum<int> {
   /// [Android] API level 10
   static const METADATA_KEY_ALBUM = MediaMetadataRetriever(1);
 

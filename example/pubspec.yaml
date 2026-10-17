@@ -1,9 +1,10 @@
-name: video_compress_example
-description: Demonstrates how to use the video_compress plugin.
+name: video_compress_advanced_example
+description: Demonstrates how to use the video_compress_advanced plugin.
 publish_to: 'none'
+version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -16,12 +17,12 @@ dependencies:
   video_player: ^2.4.2
   file_selector: ^0.8.4+2
   file_selector_macos: ^0.8.2+1
-  
+  video_compress_advanced:
+    path: ../
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  video_compress:
-    path: ../
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

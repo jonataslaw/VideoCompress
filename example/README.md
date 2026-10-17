@@ -1,10 +1,10 @@
-# video_compress_example
+# video_compress_advanced_example
 
 ```dart
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:video_compress/video_compress.dart';
+import 'package:video_compress_advanced/video_compress_advanced.dart';
 
 void main() {
   runApp(MyApp());

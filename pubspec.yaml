@@ -1,7 +1,9 @@
-name: video_compress
+name: video_compress_advanced
 description: Light library of video manipulation of Flutter. Compress video, remove audio, get video thumbnail from dart code.
-version: 3.1.4
-homepage: https://github.com/jonataslaw/VideoCompress
+version: 4.0.2
+homepage: https://github.com/nafiskabbo/video_compress_advanced
+repository: https://github.com/nafiskabbo/video_compress_advanced
+issue_tracker: https://github.com/nafiskabbo/video_compress_advanced/issues
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
