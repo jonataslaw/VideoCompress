@@ -184,6 +184,9 @@ public class VideoCompressPlugin: NSObject, FlutterPlugin {
         
         let sourceVideoAsset = avController.getVideoAsset(sourceVideoUrl)
         let sourceVideoTrack = avController.getTrack(sourceVideoAsset)
+        guard let videoTrack = sourceVideoTrack else {
+            return result(FlutterError(code: channelName,message: "compressVideo error",details: "No video track found in \(path)"))
+        }
         
         let compressionUrl =
             Utility.getPathUrl("\(Utility.basePath())/\(Utility.getFileName(path)).\(sourceVideoType)")
@@ -201,9 +204,11 @@ public class VideoCompressPlugin: NSObject, FlutterPlugin {
         
         let isIncludeAudio = includeAudio != nil ? includeAudio! : true
         
-        let session = getComposition(isIncludeAudio, timeRange, sourceVideoTrack!)
+        let session = getComposition(isIncludeAudio, timeRange, videoTrack)
         
-        let exporter = AVAssetExportSession(asset: session, presetName: getExportPreset(quality))!
+        guard let exporter = AVAssetExportSession(asset: session, presetName: getExportPreset(quality)) else {
+            return result(FlutterError(code: channelName,message: "compressVideo error",details: "Could not create an export session for \(path)"))
+        }
         
         exporter.outputURL = compressionUrl
         exporter.outputFileType = AVFileType.mp4
