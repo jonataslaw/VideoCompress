@@ -127,8 +127,16 @@ class Utility(private val channelName: String) {
         return fileName
     }
 
-    fun deleteAllCache(context: Context, result: MethodChannel.Result) {
+    fun getOutputDir(context: Context): File {
+        // getExternalFilesDir returns null when shared storage is not available
         val dir = context.getExternalFilesDir("video_compress")
-        result.success(dir?.deleteRecursively())
+                ?: File(context.filesDir, "video_compress")
+        if (!dir.exists()) dir.mkdirs()
+        return dir
+    }
+
+    fun deleteAllCache(context: Context, result: MethodChannel.Result) {
+        val dir = getOutputDir(context)
+        result.success(dir.deleteRecursively())
     }
 }

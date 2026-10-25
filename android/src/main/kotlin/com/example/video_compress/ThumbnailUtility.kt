@@ -24,9 +24,7 @@ class ThumbnailUtility(channelName: String) {
                              result: MethodChannel.Result) {
         val bmp = utility.getBitmap(path, position, result)
 
-        val dir = context.getExternalFilesDir("video_compress")
-
-        if (dir != null && !dir.exists()) dir.mkdirs()
+        val dir = utility.getOutputDir(context)
 
         val file = File(dir, path.substring(path.lastIndexOf('/'),
                 path.lastIndexOf('.')) + ".jpg")
